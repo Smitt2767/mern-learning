@@ -7,12 +7,13 @@ import {
   uuid,
   varchar,
 } from "drizzle-orm/pg-core";
+import { createdAt, id } from "../helpers.js";
 import { users } from "./users.js";
 
 export const sessions = pgTable(
   "sessions",
   {
-    id: uuid().defaultRandom().primaryKey(),
+    id,
     userId: uuid()
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
@@ -20,9 +21,7 @@ export const sessions = pgTable(
     userAgent: text(),
     ipAddress: varchar({ length: 45 }),
     expiresAt: timestamp({ withTimezone: true, mode: "date" }).notNull(),
-    createdAt: timestamp({ withTimezone: true, mode: "date" })
-      .defaultNow()
-      .notNull(),
+    createdAt,
   },
   (table) => [
     index("idx_sessions_user_id").on(table.userId),

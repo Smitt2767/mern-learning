@@ -1,31 +1,20 @@
 import { relations } from "drizzle-orm";
-import {
-  index,
-  pgTable,
-  timestamp,
-  unique,
-  uuid,
-  varchar,
-} from "drizzle-orm/pg-core";
+import { index, pgTable, unique, uuid, varchar } from "drizzle-orm/pg-core";
+import { createdAt, id, updatedAt } from "../helpers.js";
 import { accountProviderEnum } from "./enums.js";
 import { users } from "./users.js";
 
 export const accounts = pgTable(
   "accounts",
   {
-    id: uuid().defaultRandom().primaryKey(),
+    id,
     userId: uuid()
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
     provider: accountProviderEnum().notNull(),
     providerAccountId: varchar({ length: 255 }).notNull(),
-    createdAt: timestamp({ withTimezone: true, mode: "date" })
-      .defaultNow()
-      .notNull(),
-    updatedAt: timestamp({ withTimezone: true, mode: "date" })
-      .defaultNow()
-      .notNull()
-      .$onUpdate(() => new Date()),
+    createdAt,
+    updatedAt,
   },
   (table) => [
     unique("uq_accounts_provider_account").on(

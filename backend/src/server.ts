@@ -6,6 +6,8 @@ import morgan from "morgan";
 import { corsConfig } from "./config/cors.js";
 import { connectDB } from "./db/index.js";
 
+import { router as authRouter } from "./routes/auth.js";
+
 class Server {
   private port: number;
   public app: express.Application;
@@ -21,15 +23,15 @@ class Server {
 
   public async config() {
     connectDB();
+
+    this.app.use(express.json());
     this.app.use(corsConfig());
     this.app.use(cookieParser());
     this.app.use(morgan("tiny"));
   }
 
   public routes() {
-    this.app.get("/", (_, res) => {
-      res.send("Hello World");
-    });
+    this.app.use("/api/auth", authRouter);
   }
 
   public start() {

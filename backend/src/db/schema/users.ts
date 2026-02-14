@@ -1,12 +1,6 @@
 import { relations } from "drizzle-orm";
-import {
-  index,
-  pgTable,
-  text,
-  timestamp,
-  uuid,
-  varchar,
-} from "drizzle-orm/pg-core";
+import { index, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { createdAt, id, updatedAt } from "../helpers.js";
 import { accounts } from "./accounts.js";
 import { emailVerifications } from "./email-verifications.js";
 import { userRoleEnum, userStatusEnum } from "./enums.js";
@@ -16,7 +10,7 @@ import { sessions } from "./sessions.js";
 export const users = pgTable(
   "users",
   {
-    id: uuid().defaultRandom().primaryKey(),
+    id,
     firstName: varchar({ length: 100 }).notNull(),
     lastName: varchar({ length: 100 }).notNull(),
     email: varchar({ length: 255 }).notNull().unique(),
@@ -26,13 +20,8 @@ export const users = pgTable(
     status: userStatusEnum().default("active").notNull(),
     emailVerifiedAt: timestamp({ withTimezone: true, mode: "date" }),
     lastLoginAt: timestamp({ withTimezone: true, mode: "date" }),
-    createdAt: timestamp({ withTimezone: true, mode: "date" })
-      .defaultNow()
-      .notNull(),
-    updatedAt: timestamp({ withTimezone: true, mode: "date" })
-      .defaultNow()
-      .notNull()
-      .$onUpdate(() => new Date()),
+    createdAt,
+    updatedAt,
   },
   (table) => [
     index("idx_users_email").on(table.email),
