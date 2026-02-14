@@ -5,8 +5,10 @@ class Server {
   public app: express.Application;
 
   constructor(port: number) {
-    this.app = express();
     this.port = port;
+
+    this.app = express();
+
     this.config();
     this.routes();
   }
