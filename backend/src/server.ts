@@ -1,6 +1,7 @@
 import { Logger } from "@mern/logger";
 import express from "express";
 
+import { corsConfig } from "./config/cors.js";
 import { connectDB } from "./db/index.js";
 
 class Server {
@@ -18,6 +19,7 @@ class Server {
 
   public async config() {
     await connectDB();
+    this.app.use(corsConfig());
   }
 
   public routes() {
