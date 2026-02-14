@@ -4,8 +4,8 @@ import RedisStore from "rate-limit-redis";
 import redis from "../config/redis.js";
 
 interface RateLimitOptions {
-  /** Time window in milliseconds. */
-  windowMs: number;
+  /** Time window in minutes. */
+  windowMin: number;
   /** Maximum number of requests per window. */
   max: number;
   /** Custom error message sent on 429 responses. */
@@ -21,16 +21,16 @@ interface RateLimitOptions {
  * import { RateLimit } from "../middleware/rate-limit.js";
  *
  * // Per-route usage
- * router.post("/login", RateLimit({ windowMs: 15 * 60_000, max: 10 }), login);
- * router.post("/forgot-password", RateLimit({ windowMs: 60 * 60_000, max: 5 }), forgotPassword);
- * router.get("/products", RateLimit({ windowMs: 60_000, max: 200 }), getProducts);
+ * router.post("/login", RateLimit({ windowMin: 15, max: 10 }), login);
+ * router.post("/forgot-password", RateLimit({ windowMin: 60, max: 5 }), forgotPassword);
+ * router.get("/products", RateLimit({ windowMin: 1, max: 200 }), getProducts);
  *
  * // Apply to an entire router
- * router.use(RateLimit({ windowMs: 60_000, max: 100 }));
+ * router.use(RateLimit({ windowMs: 1, max: 100 }));
  */
 export function RateLimit(options: RateLimitOptions): RequestHandler {
   const config: Parameters<typeof rateLimit>[0] = {
-    windowMs: options.windowMs,
+    windowMs: options.windowMin * 60 * 1000,
     max: options.max,
     standardHeaders: true,
     legacyHeaders: false,

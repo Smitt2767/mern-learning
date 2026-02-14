@@ -1,6 +1,8 @@
 import { Logger } from "@mern/logger";
 import cookieParser from "cookie-parser";
 import express from "express";
+import helmet from "helmet";
+import hpp from "hpp";
 import morgan from "morgan";
 
 import { corsConfig } from "./config/cors.js";
@@ -23,7 +25,8 @@ class Server {
 
   public async config() {
     connectDB();
-
+    this.app.use(helmet());
+    this.app.use(hpp());
     this.app.use(express.json());
     this.app.use(corsConfig());
     this.app.use(cookieParser());
