@@ -7,8 +7,9 @@ import morgan from "morgan";
 
 import { corsConfig } from "./config/cors.js";
 import { connectDB } from "./db/index.js";
-
+import { globalErrorHandler } from "./middleware/error-handler.js";
 import { router as authRouter } from "./routes/auth.js";
+import { AppError } from "./utils/app-error.js";
 
 class Server {
   private port: number;
@@ -21,6 +22,7 @@ class Server {
 
     this.config();
     this.routes();
+    this.errorHandling();
   }
 
   public async config() {
@@ -35,6 +37,14 @@ class Server {
 
   public routes() {
     this.app.use("/api/auth", authRouter);
+  }
+
+  private errorHandling() {
+    this.app.all("*splat", (req) => {
+      throw AppError.notFound(`Cannot find ${req.originalUrl}`);
+    });
+
+    this.app.use(globalErrorHandler);
   }
 
   public start() {
