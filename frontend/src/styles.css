@@ -130,6 +130,11 @@ code {
   --radius-4xl: calc(var(--radius) + 16px);
 }
 
+@utility container {
+  max-width: 1600px;
+  margin-inline: auto;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
