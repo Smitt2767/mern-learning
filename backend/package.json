@@ -18,12 +18,16 @@
   "dependencies": {
     "@mern/logger": "workspace:^",
     "@t3-oss/env-core": "^0.13.10",
+    "drizzle-orm": "^0.45.1",
     "express": "^5.2.1",
+    "ioredis": "^5.9.3",
+    "postgres": "^3.4.8",
     "zod": "^4.3.6"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
     "dotenv": "^17.3.1",
+    "drizzle-kit": "^0.31.9",
     "tsc-watch": "^7.2.0",
     "typescript": "^5.9.3"
   }
