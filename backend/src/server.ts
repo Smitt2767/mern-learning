@@ -1,5 +1,7 @@
 import { Logger } from "@mern/logger";
+import cookieParser from "cookie-parser";
 import express from "express";
+import morgan from "morgan";
 
 import { corsConfig } from "./config/cors.js";
 import { connectDB } from "./db/index.js";
@@ -18,8 +20,10 @@ class Server {
   }
 
   public async config() {
-    await connectDB();
+    connectDB();
     this.app.use(corsConfig());
+    this.app.use(cookieParser());
+    this.app.use(morgan("tiny"));
   }
 
   public routes() {
