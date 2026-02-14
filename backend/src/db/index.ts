@@ -25,6 +25,7 @@ const client = postgres(connectionString, {
 export const db = drizzle(client, {
   schema,
   logger: env.NODE_ENV === "development" ? new QueryLogger() : false,
+  casing: "snake_case",
 });
 
 export async function connectDB() {

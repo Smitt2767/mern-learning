@@ -1,9 +1,11 @@
+/// <reference types="node" />
+
 import "dotenv/config";
 import { defineConfig } from "drizzle-kit";
 
 export default defineConfig({
   out: "./drizzle",
-  schema: "./src/db/schema/index.ts",
+  schema: "./dist/db/schema/index.js",
   dialect: "postgresql",
   dbCredentials: {
     host: process.env.DB_HOST!,
@@ -14,4 +16,5 @@ export default defineConfig({
   },
   verbose: true,
   strict: true,
+  casing: "snake_case",
 });
