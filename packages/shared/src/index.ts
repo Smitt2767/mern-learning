@@ -11,3 +11,10 @@ export {
 } from "./constants/index.js";
 
 export type { User, Account, Session } from "./types/index.js";
+
+export {
+  signupSchema,
+  signupFormSchema,
+  type SignupInput,
+  type SignupFormInput,
+} from "./schemas/index.js";

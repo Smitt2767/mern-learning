@@ -27,6 +27,11 @@ class Server {
 
   public async config() {
     connectDB();
+
+    // Trust the first proxy so req.ip returns the real client IP
+    // instead of the proxy's IP (e.g., Nginx, AWS ALB, Cloudflare)
+    this.app.set("trust proxy", 1);
+
     this.app.use(helmet());
     this.app.use(hpp());
     this.app.use(express.json());
