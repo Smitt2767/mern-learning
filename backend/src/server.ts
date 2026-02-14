@@ -1,3 +1,4 @@
+import { logger } from "@mern/logger";
 import express from "express";
 
 class Server {
@@ -22,8 +23,13 @@ class Server {
   }
 
   public start() {
-    this.app.listen(this.port, () => {
-      console.log(`API is running at http://localhost:${this.port}`);
+    const server = this.app.listen(this.port, () => {
+      const addr = server.address();
+      const bind =
+        typeof addr === "string"
+          ? addr
+          : `http://${addr?.address === "::" ? "localhost" : addr?.address}:${addr?.port}`;
+      logger.info(`API is running at ${bind}`);
     });
   }
 }
