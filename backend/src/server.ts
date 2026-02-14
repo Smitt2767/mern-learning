@@ -1,4 +1,4 @@
-import { logger } from "@mern/logger";
+import { Logger } from "@mern/logger";
 import express from "express";
 
 class Server {
@@ -29,7 +29,7 @@ class Server {
         typeof addr === "string"
           ? addr
           : `http://${addr?.address === "::" ? "localhost" : addr?.address}:${addr?.port}`;
-      logger.info(`API is running at ${bind}`);
+      Logger.info(`API is running at ${bind}`);
     });
   }
 }
