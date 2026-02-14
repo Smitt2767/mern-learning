@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-import { authConfig } from "../config/auth.js";
+import { appConfig } from "../config/app.js";
 import { env } from "../config/env.js";
 
 export interface AccessTokenPayload {
@@ -19,13 +19,13 @@ export class Jwt {
 
   static signAccessToken(payload: AccessTokenPayload): string {
     return jwt.sign(payload, env.JWT_ACCESS_SECRET, {
-      expiresIn: authConfig.accessToken.expiresIn,
+      expiresIn: appConfig.auth.accessToken.expiresIn,
     });
   }
 
   static signRefreshToken(payload: RefreshTokenPayload): string {
     return jwt.sign(payload, env.JWT_REFRESH_SECRET, {
-      expiresIn: authConfig.refreshToken.expiresIn,
+      expiresIn: appConfig.auth.refreshToken.expiresIn,
     });
   }
 
@@ -38,6 +38,6 @@ export class Jwt {
   }
 
   static getRefreshTokenExpiresAt(): Date {
-    return authConfig.refreshToken.getExpiresAt();
+    return appConfig.auth.refreshToken.getExpiresAt();
   }
 }

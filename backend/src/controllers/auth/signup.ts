@@ -2,7 +2,7 @@ import { ACCOUNT_PROVIDER, signupSchema } from "@mern/shared";
 import type { Request, Response } from "express";
 import crypto from "node:crypto";
 
-import { authConfig } from "../../config/auth.js";
+import { appConfig } from "../../config/app.js";
 import { db } from "../../db/index.js";
 import { AccountService } from "../../services/account.js";
 import { SessionService } from "../../services/session.js";
@@ -69,11 +69,11 @@ export async function signUp(req: Request, res: Response): Promise<void> {
       );
 
       Cookie.set(res, "access_token", accessToken, {
-        maxAge: authConfig.accessToken.maxAge,
+        maxAge: appConfig.auth.accessToken.maxAge,
       });
 
       Cookie.set(res, "refresh_token", refreshToken, {
-        maxAge: authConfig.refreshToken.maxAge,
+        maxAge: appConfig.auth.refreshToken.maxAge,
         path: "/api/auth",
       });
 

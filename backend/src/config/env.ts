@@ -1,5 +1,5 @@
-import "dotenv/config";
 import { createEnv } from "@t3-oss/env-core";
+import "dotenv/config";
 import { z } from "zod";
 
 export const env = createEnv({
@@ -14,14 +14,15 @@ export const env = createEnv({
     REDIS_HOST: z.string().default("localhost"),
     REDIS_PORT: z.coerce.number().default(6379),
     REDIS_PASSWORD: z.string().optional(),
-    FRONTEND_URL: z.string().url(),
+    FRONTEND_URL: z.url(),
 
     // JWT
     JWT_ACCESS_SECRET: z.string().min(32),
     JWT_REFRESH_SECRET: z.string().min(32),
-    // Token expiry in minutes/days — used for cookie maxAge and JWT signing
-    JWT_ACCESS_TOKEN_EXPIRY_MINUTES: z.coerce.number().default(15),
-    JWT_REFRESH_TOKEN_EXPIRY_DAYS: z.coerce.number().default(7),
+
+    // Token expiry in minutes — used for cookie maxAge and JWT signing
+    JWT_ACCESS_TOKEN_EXPIRY_MINUTES: z.coerce.number().default(10080), // 7 days
+    JWT_REFRESH_TOKEN_EXPIRY_MINUTES: z.coerce.number().default(43200), // 30 days
 
     // OAuth - GitHub
     GITHUB_CLIENT_ID: z.string(),
