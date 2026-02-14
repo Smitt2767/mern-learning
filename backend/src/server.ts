@@ -1,6 +1,8 @@
 import { Logger } from "@mern/logger";
 import express from "express";
 
+import { connectDB } from "./db/index.js";
+
 class Server {
   private port: number;
   public app: express.Application;
@@ -14,7 +16,9 @@ class Server {
     this.routes();
   }
 
-  public config() {}
+  public async config() {
+    await connectDB();
+  }
 
   public routes() {
     this.app.get("/", (_, res) => {
@@ -29,7 +33,7 @@ class Server {
         typeof addr === "string"
           ? addr
           : `http://${addr?.address === "::" ? "localhost" : addr?.address}:${addr?.port}`;
-      Logger.info(`API is running at ${bind}`);
+      Logger.success(`API is running at ${bind}`);
     });
   }
 }
