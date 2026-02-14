@@ -25,17 +25,13 @@ import redis, {
 export function Cacheable(prefix: string, ttl: CacheTime) {
   return function (
     _target: object,
-    propertyKey: string,
-    descriptor: PropertyDescriptor
+    _propertyKey: string,
+    descriptor: PropertyDescriptor,
   ) {
     const originalMethod = descriptor.value as (...args: unknown[]) => unknown;
 
     descriptor.value = async function (...args: unknown[]) {
-      const cacheKey = generateCacheKey(
-        prefix,
-        propertyKey,
-        ...args.map(String)
-      );
+      const cacheKey = generateCacheKey(prefix, ...args.map(String));
 
       try {
         const cached = await redis.get(cacheKey);
@@ -44,7 +40,7 @@ export function Cacheable(prefix: string, ttl: CacheTime) {
         }
       } catch (err) {
         Logger.error(
-          `Cache read failed for key "${cacheKey}": ${(err as Error).message}`
+          `Cache read failed for key "${cacheKey}": ${(err as Error).message}`,
         );
       }
 
@@ -56,11 +52,11 @@ export function Cacheable(prefix: string, ttl: CacheTime) {
             cacheKey,
             JSON.stringify(result),
             "EX",
-            CACHE_TIMES[ttl]
+            CACHE_TIMES[ttl],
           );
         } catch (err) {
           Logger.error(
-            `Cache write failed for key "${cacheKey}": ${(err as Error).message}`
+            `Cache write failed for key "${cacheKey}": ${(err as Error).message}`,
           );
         }
       }
@@ -87,8 +83,8 @@ export function Cacheable(prefix: string, ttl: CacheTime) {
 export function CacheInvalidate(...prefixes: string[]) {
   return function (
     _target: object,
-    propertyKey: string,
-    descriptor: PropertyDescriptor
+    _propertyKey: string,
+    descriptor: PropertyDescriptor,
   ) {
     const originalMethod = descriptor.value as (...args: unknown[]) => unknown;
 
@@ -99,13 +95,11 @@ export function CacheInvalidate(...prefixes: string[]) {
 
       try {
         const keys = prefixes.map((prefix) =>
-          generateCacheKey(prefix, propertyKey, ...argParts)
+          generateCacheKey(prefix, ...argParts),
         );
         await redis.del(...keys);
       } catch (err) {
-        Logger.error(
-          `Cache invalidation failed: ${(err as Error).message}`
-        );
+        Logger.error(`Cache invalidation failed: ${(err as Error).message}`);
       }
 
       return result;
