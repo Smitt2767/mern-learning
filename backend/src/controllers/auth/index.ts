@@ -1,3 +1,4 @@
+import { changePassword } from "./changePassword.js";
 import { forgotPassword } from "./forgotPassword.js";
 import { login } from "./login.js";
 import { logout } from "./logout.js";
@@ -14,4 +15,5 @@ export class AuthController {
   static oauthCallback = oauthCallback;
   static forgotPassword = forgotPassword;
   static resetPassword = resetPassword;
+  static changePassword = changePassword;
 }

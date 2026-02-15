@@ -36,3 +36,11 @@ router
 router
   .route("/reset-password")
   .post(RateLimit({ windowMin: 15, limit: 10 }), AuthController.resetPassword);
+
+router
+  .route("/change-password")
+  .post(
+    RateLimit({ windowMin: 15, limit: 10 }),
+    authenticate,
+    AuthController.changePassword,
+  );

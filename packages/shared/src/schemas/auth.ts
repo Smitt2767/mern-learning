@@ -75,6 +75,23 @@ export const resetPasswordSchema = z.object({
 
 export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;
 
+export const changePasswordSchema = z.object({
+  currentPassword: z.string().min(1, "Current password is required"),
+  newPassword: passwordSchema,
+});
+
+export const changePasswordFormSchema = changePasswordSchema
+  .extend({
+    confirmNewPassword: z.string().min(1, "Please confirm your new password"),
+  })
+  .refine((data) => data.newPassword === data.confirmNewPassword, {
+    message: "Passwords do not match",
+    path: ["confirmNewPassword"],
+  });
+
+export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;
+export type ChangePasswordFormInput = z.infer<typeof changePasswordFormSchema>;
+
 export const oauthProviderParamSchema = z.object({
   provider: z.enum(OAUTH_PROVIDERS, {
     message: "Unsupported OAuth provider",
