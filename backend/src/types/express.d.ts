@@ -1,11 +1,12 @@
 // types/express.d.ts
 
-import type { User } from "../db/schema/users.ts";
+import type { SessionUser } from "../services/user.ts";
 
 declare global {
   namespace Express {
     interface Request {
-      user?: User;
+      user?: SessionUser;
+      sessionId?: string;
     }
   }
 }

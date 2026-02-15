@@ -1,5 +1,6 @@
 import express, { Router } from "express";
 import { AuthController } from "../controllers/auth/index.js";
+import { authenticate } from "../middleware/auth.js";
 import { RateLimit } from "../middleware/rate-limit.js";
 
 export const router: Router = express.Router();
@@ -14,4 +15,4 @@ router
 
 router
   .route("/logout")
-  .post(RateLimit({ windowMin: 15, max: 30 }), AuthController.logout);
+  .post(RateLimit({ windowMin: 15, max: 30 }), authenticate, AuthController.logout);

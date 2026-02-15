@@ -9,6 +9,7 @@ import { corsConfig } from "./config/cors.js";
 import { connectDB } from "./db/index.js";
 import { globalErrorHandler } from "./middleware/error-handler.js";
 import { router as authRouter } from "./routes/auth.js";
+import { router as userRouter } from "./routes/user.js";
 import { AppError } from "./utils/app-error.js";
 
 class Server {
@@ -42,6 +43,7 @@ class Server {
 
   public routes() {
     this.app.use("/api/auth", authRouter);
+    this.app.use("/api/user", userRouter);
   }
 
   private errorHandling() {
