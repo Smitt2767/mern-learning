@@ -4,6 +4,10 @@ export const ACCOUNT_PROVIDER = {
   GOOGLE: "google",
 } as const;
 
-export type AccountProvider = (typeof ACCOUNT_PROVIDER)[keyof typeof ACCOUNT_PROVIDER];
+export type AccountProvider =
+  (typeof ACCOUNT_PROVIDER)[keyof typeof ACCOUNT_PROVIDER];
 
-export const ACCOUNT_PROVIDERS = Object.values(ACCOUNT_PROVIDER) as [AccountProvider, ...AccountProvider[]];
+export const ACCOUNT_PROVIDERS = Object.values(ACCOUNT_PROVIDER) as [
+  AccountProvider,
+  ...AccountProvider[],
+];

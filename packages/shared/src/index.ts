@@ -10,7 +10,7 @@ export {
   type AccountProvider,
 } from "./constants/index.js";
 
-export type { User, Account, Session } from "./types/index.js";
+export type { User } from "./types/index.js";
 
 export {
   signupSchema,
