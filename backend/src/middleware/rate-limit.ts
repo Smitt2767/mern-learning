@@ -1,5 +1,5 @@
 import type { Request, RequestHandler } from "express";
-import rateLimit from "express-rate-limit";
+import rateLimit, { ipKeyGenerator } from "express-rate-limit";
 import RedisStore from "rate-limit-redis";
 import redis from "../config/redis.js";
 
@@ -59,7 +59,7 @@ export function RateLimit(options: RateLimitOptions): RequestHandler {
 
         // For anonymous requests, IP is the only identifier available.
         // Be mindful of shared IPs (NAT, proxies) — keep anonymous limits generous.
-        return `${route}:ip:${req.ip ?? "unknown"}`;
+        return `${route}:ip:${ipKeyGenerator(req.ip ?? "unknown")}`;
       }),
   };
 

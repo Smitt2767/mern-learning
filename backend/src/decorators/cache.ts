@@ -26,7 +26,7 @@ export function Cacheable<TArgs extends unknown[]>({
       try {
         const cached = await Cache.get<any>(cacheKey);
         if (cached) {
-          return JSON.parse(cached);
+          return cached;
         }
       } catch (err) {
         Logger.error(
