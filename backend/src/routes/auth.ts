@@ -12,4 +12,6 @@ router
   .route("/login")
   .post(RateLimit({ windowMin: 15, max: 10 }), AuthController.login);
 
-router.route("/logout").post(AuthController.logout);
+router
+  .route("/logout")
+  .post(RateLimit({ windowMin: 15, max: 30 }), AuthController.logout);
