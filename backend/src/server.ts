@@ -26,7 +26,7 @@ class Server {
     this.errorHandling();
   }
 
-  public async config() {
+  public config() {
     connectDB();
 
     // Trust the first proxy so req.ip returns the real client IP
