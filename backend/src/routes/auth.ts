@@ -28,3 +28,11 @@ router
 router
   .route("/callback/:provider")
   .get(RateLimit({ windowMin: 15, limit: 20 }), AuthController.oauthCallback);
+
+router
+  .route("/forgot-password")
+  .post(RateLimit({ windowMin: 60, limit: 3 }), AuthController.forgotPassword);
+
+router
+  .route("/reset-password")
+  .post(RateLimit({ windowMin: 15, limit: 10 }), AuthController.resetPassword);

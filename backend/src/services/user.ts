@@ -15,10 +15,7 @@ const { password: _, ...userColumnsWithoutPassword } = getTableColumns(users);
 export class UserService {
   private constructor() {}
 
-  static async findByEmail(
-    email: string,
-    tx: DbInstance = db,
-  ): Promise<User | undefined> {
+  static async findByEmail(email: string, tx: DbInstance = db) {
     return tx.query.users.findFirst({
       where: eq(users.email, email),
     });
@@ -29,7 +26,7 @@ export class UserService {
     ttl: "oneHour",
     tags: [CacheTags.users.all, CacheTags.users.byId],
   })
-  static async findById(id: string): Promise<SessionUser | undefined> {
+  static async findById(id: string) {
     const [user] = await db
       .select(userColumnsWithoutPassword)
       .from(users)
@@ -38,7 +35,7 @@ export class UserService {
     return user;
   }
 
-  static async create(data: NewUser, tx: DbInstance = db): Promise<User> {
+  static async create(data: NewUser, tx: DbInstance = db) {
     const [user] = await tx.insert(users).values(data).returning();
     return user!;
   }
@@ -48,7 +45,7 @@ export class UserService {
     id: string,
     status: UserStatus,
     tx: DbInstance = db,
-  ): Promise<void> {
+  ) {
     await tx
       .update(users)
       .set({
@@ -59,11 +56,20 @@ export class UserService {
   }
 
   @CacheInvalidate({ tags: [CacheTags.users.byId] })
+  static async updatePassword(
+    id: string,
+    password: string,
+    tx: DbInstance = db,
+  ) {
+    await tx.update(users).set({ password }).where(eq(users.id, id));
+  }
+
+  @CacheInvalidate({ tags: [CacheTags.users.byId] })
   static async updateProfileImage(
     id: string,
     profileImage: string,
     tx: DbInstance = db,
-  ): Promise<void> {
+  ) {
     await tx.update(users).set({ profileImage }).where(eq(users.id, id));
   }
 }

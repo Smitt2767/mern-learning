@@ -1,6 +1,18 @@
 import { z } from "zod";
 import { OAUTH_PROVIDERS } from "../index.js";
 
+export const passwordSchema = z
+  .string()
+  .min(8, "Password must be at least 8 characters")
+  .max(128, "Password must be 128 characters or less")
+  .regex(/[a-z]/, "Password must contain at least one lowercase letter")
+  .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+  .regex(/[0-9]/, "Password must contain at least one number")
+  .regex(
+    /[^a-zA-Z0-9]/,
+    "Password must contain at least one special character",
+  );
+
 export const signupSchema = z.object({
   firstName: z
     .string()
@@ -18,17 +30,7 @@ export const signupSchema = z.object({
     .min(1, "Email is required")
     .max(255, "Email must be 255 characters or less")
     .toLowerCase(),
-  password: z
-    .string()
-    .min(8, "Password must be at least 8 characters")
-    .max(128, "Password must be 128 characters or less")
-    .regex(/[a-z]/, "Password must contain at least one lowercase letter")
-    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
-    .regex(/[0-9]/, "Password must contain at least one number")
-    .regex(
-      /[^a-zA-Z0-9]/,
-      "Password must contain at least one special character",
-    ),
+  password: passwordSchema,
 });
 
 export const signupFormSchema = signupSchema
@@ -54,6 +56,24 @@ export const loginSchema = z.object({
 });
 
 export type LoginInput = z.infer<typeof loginSchema>;
+
+export const forgotPasswordSchema = z.object({
+  email: z
+    .email("Invalid email address")
+    .trim()
+    .min(1, "Email is required")
+    .max(255, "Email must be 255 characters or less")
+    .toLowerCase(),
+});
+
+export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
+
+export const resetPasswordSchema = z.object({
+  token: z.string().min(1, "Reset token is required"),
+  password: passwordSchema,
+});
+
+export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;
 
 export const oauthProviderParamSchema = z.object({
   provider: z.enum(OAUTH_PROVIDERS, {
