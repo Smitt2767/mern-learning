@@ -1,4 +1,4 @@
-import { ACCOUNT_PROVIDER, loginSchema } from "@mern/shared";
+import { ACCOUNT_PROVIDER, USER_STATUS, loginSchema } from "@mern/shared";
 import type { Request, Response } from "express";
 import crypto from "node:crypto";
 
@@ -33,12 +33,19 @@ export async function login(req: Request, res: Response): Promise<void> {
     throw AppError.unauthorized("Invalid email or password");
   }
 
+  if (user.status === USER_STATUS.SUSPENDED) {
+    throw AppError.forbidden("Your account has been suspended");
+  }
+
+  if (user.status === USER_STATUS.INACTIVE) {
+    await UserService.updateStatus(user.id, USER_STATUS.ACTIVE);
+  }
+
   const sessionId = crypto.randomUUID();
 
   const accessToken = Jwt.signAccessToken({
     userId: user.id,
-    email: user.email,
-    role: user.role,
+    sessionId,
   });
 
   const refreshToken = Jwt.signRefreshToken({

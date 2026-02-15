@@ -24,63 +24,63 @@ export async function signUp(req: Request, res: Response): Promise<void> {
   const sessionId = crypto.randomUUID();
 
   try {
-    const { sanitizedUser, accessToken, refreshToken } =
-      await db.transaction(async (tx) => {
-      const user = await UserService.create(
-        {
-          firstName: input.firstName,
-          lastName: input.lastName,
-          email: input.email,
-          password: hashedPassword,
-        },
-        tx,
-      );
+    const { sanitizedUser, accessToken, refreshToken } = await db.transaction(
+      async (tx) => {
+        const user = await UserService.create(
+          {
+            firstName: input.firstName,
+            lastName: input.lastName,
+            email: input.email,
+            password: hashedPassword,
+          },
+          tx,
+        );
 
-      await AccountService.create(
-        {
+        await AccountService.create(
+          {
+            userId: user.id,
+            provider: ACCOUNT_PROVIDER.CREDENTIALS,
+            providerAccountId: user.id,
+          },
+          tx,
+        );
+
+        const accessToken = Jwt.signAccessToken({
           userId: user.id,
-          provider: ACCOUNT_PROVIDER.CREDENTIALS,
-          providerAccountId: user.id,
-        },
-        tx,
-      );
+          sessionId,
+        });
 
-      const accessToken = Jwt.signAccessToken({
-        userId: user.id,
-        email: user.email,
-        role: user.role,
-      });
-
-      const refreshToken = Jwt.signRefreshToken({
-        userId: user.id,
-        sessionId,
-      });
-
-      await SessionService.create(
-        {
-          id: sessionId,
+        const refreshToken = Jwt.signRefreshToken({
           userId: user.id,
-          refreshToken,
-          userAgent: req.headers["user-agent"] ?? null,
-          ipAddress: req.ip ?? null,
-          expiresAt: Jwt.getRefreshTokenExpiresAt(),
-        },
-        tx,
-      );
+          sessionId,
+        });
 
-      Cookie.set(res, "access_token", accessToken, {
-        maxAge: appConfig.auth.accessToken.maxAge,
-      });
+        await SessionService.create(
+          {
+            id: sessionId,
+            userId: user.id,
+            refreshToken,
+            userAgent: req.headers["user-agent"] ?? null,
+            ipAddress: req.ip ?? null,
+            expiresAt: Jwt.getRefreshTokenExpiresAt(),
+          },
+          tx,
+        );
 
-      Cookie.set(res, "refresh_token", refreshToken, {
-        maxAge: appConfig.auth.refreshToken.maxAge,
-        path: "/api/auth",
-      });
+        Cookie.set(res, "access_token", accessToken, {
+          maxAge: appConfig.auth.accessToken.maxAge,
+        });
 
-      const { password: _, ...sanitizedUser } = user;
+        Cookie.set(res, "refresh_token", refreshToken, {
+          maxAge: appConfig.auth.refreshToken.maxAge,
+          path: "/api/auth",
+        });
 
-      return { sanitizedUser, accessToken, refreshToken };
-    });
+        const { password: _, ...sanitizedUser } = user;
+
+        return { sanitizedUser, accessToken, refreshToken };
+      },
+    );
 
     res.status(201).json({
       success: true,

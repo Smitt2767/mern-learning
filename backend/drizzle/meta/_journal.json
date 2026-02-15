@@ -8,6 +8,13 @@
       "when": 1771061516730,
       "tag": "0000_glamorous_ultragirl",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1771129419447,
+      "tag": "0001_rare_cargill",
+      "breakpoints": true
     }
   ]
 }

@@ -20,6 +20,7 @@ export const users = pgTable(
     status: userStatusEnum().default("active").notNull(),
     emailVerifiedAt: timestamp({ withTimezone: true, mode: "date" }),
     lastLoginAt: timestamp({ withTimezone: true, mode: "date" }),
+    deactivatedAt: timestamp({ withTimezone: true, mode: "date" }),
     createdAt,
     updatedAt,
   },

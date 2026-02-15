@@ -5,8 +5,7 @@ import { env } from "../config/env.js";
 
 export interface AccessTokenPayload {
   userId: string;
-  email: string;
-  role: string;
+  sessionId: string;
 }
 
 export interface RefreshTokenPayload {

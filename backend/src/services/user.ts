@@ -1,3 +1,4 @@
+import { type UserStatus } from "@mern/shared";
 import { eq } from "drizzle-orm";
 
 import { db } from "../db/index.js";
@@ -19,5 +20,19 @@ export class UserService {
   static async create(data: NewUser, tx: DbInstance = db): Promise<User> {
     const [user] = await tx.insert(users).values(data).returning();
     return user!;
+  }
+
+  static async updateStatus(
+    id: string,
+    status: UserStatus,
+    tx: DbInstance = db,
+  ): Promise<void> {
+    await tx
+      .update(users)
+      .set({
+        status,
+        deactivatedAt: status === "inactive" ? new Date() : null,
+      })
+      .where(eq(users.id, id));
   }
 }

@@ -10,7 +10,7 @@ export async function logout(req: Request, res: Response): Promise<void> {
   if (refreshToken) {
     try {
       const payload = Jwt.verifyRefreshToken(refreshToken);
-      await SessionService.deleteById(payload.sessionId, payload.userId);
+      await SessionService.deleteById(payload.sessionId);
     } catch {
       // Token is invalid or expired — still proceed with logout
     }
