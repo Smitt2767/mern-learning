@@ -7,10 +7,10 @@ interface RateLimitOptions {
   /** Time window in minutes. */
   windowMin: number;
   /** Maximum number of requests per window. */
-  max: number;
+  limit: number;
   /** Custom error message sent on 429 responses. */
   message?: string | Record<string, unknown>;
-  /** Custom key generator — defaults to `req.ip`. */
+  /** Custom key generator — defaults to `req.user.id` or `req.ip`. */
   keyGenerator?: (req: Request) => string;
 }
 
@@ -21,33 +21,47 @@ interface RateLimitOptions {
  * import { RateLimit } from "../middleware/rate-limit.js";
  *
  * // Per-route usage
- * router.post("/login", RateLimit({ windowMin: 15, max: 10 }), login);
- * router.post("/forgot-password", RateLimit({ windowMin: 60, max: 5 }), forgotPassword);
- * router.get("/products", RateLimit({ windowMin: 1, max: 200 }), getProducts);
+ * router.post("/login", RateLimit({ windowMin: 15, limit: 10 }), login);
+ * router.post("/forgot-password", RateLimit({ windowMin: 60, limit: 5 }), forgotPassword);
+ * router.get("/products", RateLimit({ windowMin: 1, limit: 200 }), getProducts);
  *
  * // Apply to an entire router
- * router.use(RateLimit({ windowMs: 1, max: 100 }));
+ * router.use(RateLimit({ windowMin: 1, limit: 100 }));
  */
 export function RateLimit(options: RateLimitOptions): RequestHandler {
   const config: Parameters<typeof rateLimit>[0] = {
     windowMs: options.windowMin * 60 * 1000,
-    max: options.max,
+    max: options.limit,
     standardHeaders: true,
     legacyHeaders: false,
     message: options.message ?? {
       error: "Too many requests, try again later",
     },
     store: new RedisStore({
+      prefix: "ratelimit:api:",
       sendCommand: (...args: string[]) =>
         redis.call(...(args as [string, ...string[]])) as Promise<
           boolean | number | string | (boolean | number | string)[]
         >,
     }),
-  };
+    keyGenerator:
+      options.keyGenerator ??
+      ((req: Request) => {
+        // Normalize to avoid double slashes from Express sub-router mounting
+        const path = `${req.baseUrl}${req.path}`.replace(/\/+/g, "/");
+        const route = `${req.method}:${path}`;
 
-  if (options.keyGenerator) {
-    config.keyGenerator = options.keyGenerator;
-  }
+        // Key on user ID only — including IP here would let users bypass
+        // limits by rotating IPs (VPN, proxies, etc.)
+        if (req.user?.id) {
+          return `${route}:user:${req.user.id}`;
+        }
+
+        // For anonymous requests, IP is the only identifier available.
+        // Be mindful of shared IPs (NAT, proxies) — keep anonymous limits generous.
+        return `${route}:ip:${req.ip ?? "unknown"}`;
+      }),
+  };
 
   return rateLimit(config);
 }

@@ -1,14 +1,23 @@
 import { eq } from "drizzle-orm";
+import { CacheKeys } from "../cache/keys.js";
+import { CacheTags } from "../cache/tags.js";
 import { db } from "../db/index.js";
 import { sessions, type NewSession, type Session } from "../db/schema/index.js";
-import { Cacheable } from "../decorators/cache.js";
+import { CacheInvalidate, Cacheable } from "../decorators/cache.js";
 import type { DbInstance } from "../types/index.js";
-import { Cache } from "../utils/cache.js";
 
 export class SessionService {
   private constructor() {}
 
-  @Cacheable("session", "oneHour")
+  @Cacheable({
+    key: CacheKeys.sessions.byId,
+    ttl: "oneDay",
+    tags: [
+      CacheTags.sessions.all,
+      (_, id) => CacheTags.sessions.byId(id),
+      CacheTags.sessions.byUserId,
+    ],
+  })
   static async findById(
     _userId: string,
     id: string,
@@ -20,18 +29,11 @@ export class SessionService {
 
   static async create(data: NewSession, tx: DbInstance = db): Promise<Session> {
     const [session] = await tx.insert(sessions).values(data).returning();
-    await Cache.set("session", "oneWeek", data, session?.userId!, data.id!);
     return session!;
   }
 
+  @CacheInvalidate({ tags: [CacheTags.sessions.byId] })
   static async deleteById(id: string, tx: DbInstance = db): Promise<void> {
-    const [session] = await tx
-      .delete(sessions)
-      .where(eq(sessions.id, id))
-      .returning();
-
-    if (session) {
-      await Cache.invalidate(["user"], session.userId, session.id);
-    }
+    await tx.delete(sessions).where(eq(sessions.id, id)).returning();
   }
 }

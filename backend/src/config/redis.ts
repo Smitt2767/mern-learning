@@ -39,8 +39,4 @@ export const CACHE_TIMES = {
 
 export type CacheTime = keyof typeof CACHE_TIMES;
 
-export function generateCacheKey(...parts: string[]): string {
-  return parts.join(":");
-}
-
 export default redis;

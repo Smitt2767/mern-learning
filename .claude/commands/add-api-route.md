@@ -20,7 +20,7 @@ Route: $ARGUMENTS
    - Use `AppError` static factories for errors (`badRequest`, `unauthorized`, `notFound`, etc.)
    - Catch Postgres unique constraint violations (code `23505`) and re-throw as `AppError.badRequest`
 4. **Wire controller** in `backend/src/controllers/<domain>/index.ts` — import and assign as static property on the controller class
-5. **Route** in `backend/src/routes/<domain>.ts` — add rate limiting with `RateLimit({ windowMin, max })` where appropriate
+5. **Route** in `backend/src/routes/<domain>.ts` — add rate limiting with `RateLimit({ windowMin, limit })` where appropriate
 6. **Register route** in `backend/src/server.ts` → `routes()` method: `this.app.use("/api/<domain>", router)`
 
 ## Response format
@@ -41,7 +41,7 @@ throw AppError.notFound("...");     // 404
 - `Jwt` — `signAccessToken(payload)`, `signRefreshToken(payload)`, `verifyAccessToken(token)`, `verifyRefreshToken(token)`, `getRefreshTokenExpiresAt()` — `backend/src/utils/jwt.ts`
 - `Cookie` — `set(res, name, value, options?)`, `get(req, name)`, `delete(res, name, options?)` — `backend/src/utils/cookie.ts`
 - `AppError` — `badRequest()`, `unauthorized()`, `forbidden()`, `notFound()`, `tooMany()`, `internal()` — `backend/src/utils/app-error.ts`
-- `RateLimit({ windowMin, max })` — `backend/src/middleware/rate-limit.ts`
+- `RateLimit({ windowMin, limit })` — `backend/src/middleware/rate-limit.ts`
 
 ## Key conventions
 

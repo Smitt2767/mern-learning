@@ -1,40 +1,30 @@
 import { Logger } from "@mern/logger";
-import redis, {
-  CACHE_TIMES,
-  generateCacheKey,
-  type CacheTime,
-} from "../config/redis.js";
+import { Cache } from "../cache/index.js";
+import { type CacheTime } from "../config/redis.js";
 
-/**
- * Caches the return value of a method in Redis.
- *
- * Builds a cache key from `prefix` + stringified method arguments.
- * On cache hit, returns the cached value without calling the method.
- * On cache miss, calls the method, stores the result, and returns it.
- *
- * Falls through to the real method if Redis is unavailable.
- *
- * @example
- * class ProductService {
- *   @Cacheable("product", "oneHour")
- *   async getById(id: string) {
- *     return db.select().from(products).where(eq(products.id, id));
- *   }
- * }
- */
-export function Cacheable(prefix: string, ttl: CacheTime) {
+interface CacheableOptions<TArgs extends unknown[]> {
+  key: (...args: TArgs) => string;
+  tags?: Array<(...args: TArgs) => string>;
+  ttl: CacheTime;
+}
+
+export function Cacheable<TArgs extends unknown[]>({
+  key: keyFn,
+  ttl,
+  tags,
+}: CacheableOptions<TArgs>) {
   return function (
     _target: object,
     _propertyKey: string,
     descriptor: PropertyDescriptor,
   ) {
-    const originalMethod = descriptor.value as (...args: unknown[]) => unknown;
+    const originalMethod = descriptor.value as (...args: TArgs) => unknown;
 
-    descriptor.value = async function (...args: unknown[]) {
-      const cacheKey = generateCacheKey(prefix, ...args.map(String));
+    descriptor.value = async function (...args: TArgs) {
+      const cacheKey = keyFn(...args);
 
       try {
-        const cached = await redis.get(cacheKey);
+        const cached = await Cache.get<any>(cacheKey);
         if (cached) {
           return JSON.parse(cached);
         }
@@ -48,12 +38,16 @@ export function Cacheable(prefix: string, ttl: CacheTime) {
 
       if (result !== null && result !== undefined) {
         try {
-          await redis.set(
-            cacheKey,
-            JSON.stringify(result),
-            "EX",
-            CACHE_TIMES[ttl],
-          );
+          if (tags) {
+            await Cache.setTagged(
+              cacheKey,
+              result,
+              ttl,
+              tags.map((tag) => tag(...args)),
+            );
+          } else {
+            await Cache.set(cacheKey, result, ttl);
+          }
         } catch (err) {
           Logger.error(
             `Cache write failed for key "${cacheKey}": ${(err as Error).message}`,
@@ -66,38 +60,33 @@ export function Cacheable(prefix: string, ttl: CacheTime) {
   };
 }
 
-/**
- * Invalidates (deletes) cache entries after the decorated method executes.
- *
- * Builds keys from each prefix + stringified method arguments,
- * so use the same prefix/args shape as the corresponding @Cacheable.
- *
- * @example
- * class ProductService {
- *   @CacheInvalidate("product", "products:list")
- *   async update(id: string, data: UpdateProduct) {
- *     return db.update(products).set(data).where(eq(products.id, id));
- *   }
- * }
- */
-export function CacheInvalidate(...prefixes: string[]) {
+interface CacheInvalidateOptions<TArgs extends unknown[]> {
+  keys?: Array<(...args: TArgs) => string>;
+  tags?: Array<(...args: TArgs) => string>;
+}
+
+export function CacheInvalidate<TArgs extends unknown[]>({
+  keys: keyFns = [],
+  tags: tagFns = [],
+}: CacheInvalidateOptions<TArgs>) {
   return function (
     _target: object,
     _propertyKey: string,
     descriptor: PropertyDescriptor,
   ) {
-    const originalMethod = descriptor.value as (...args: unknown[]) => unknown;
+    const originalMethod = descriptor.value as (...args: TArgs) => unknown;
 
-    descriptor.value = async function (...args: unknown[]) {
+    descriptor.value = async function (...args: TArgs) {
       const result = await originalMethod.apply(this, args);
 
-      const argParts = args.map(String);
-
       try {
-        const keys = prefixes.map((prefix) =>
-          generateCacheKey(prefix, ...argParts),
-        );
-        await redis.del(...keys);
+        const computedKeys = keyFns.map((fn) => fn(...args));
+        const computedTags = tagFns.map((fn) => fn(...args));
+
+        await Promise.all([
+          computedKeys.length && Cache.invalidate(...computedKeys),
+          computedTags.length && Cache.invalidateByTag(...computedTags),
+        ]);
       } catch (err) {
         Logger.error(`Cache invalidation failed: ${(err as Error).message}`);
       }

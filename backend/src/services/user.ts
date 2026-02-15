@@ -1,11 +1,12 @@
 import { type UserStatus } from "@mern/shared";
 import { eq, getTableColumns } from "drizzle-orm";
 
+import { CacheKeys } from "../cache/keys.js";
+import { CacheTags } from "../cache/tags.js";
 import { db } from "../db/index.js";
 import { users, type NewUser, type User } from "../db/schema/index.js";
-import { Cacheable } from "../decorators/cache.js";
+import { CacheInvalidate, Cacheable } from "../decorators/cache.js";
 import type { DbInstance } from "../types/index.js";
-import { Cache } from "../utils/cache.js";
 
 export type SessionUser = Omit<User, "password">;
 
@@ -23,7 +24,11 @@ export class UserService {
     });
   }
 
-  @Cacheable("user", "oneHour")
+  @Cacheable({
+    key: CacheKeys.users.byId,
+    ttl: "oneHour",
+    tags: [CacheTags.users.all, CacheTags.users.byId],
+  })
   static async findById(id: string): Promise<SessionUser | undefined> {
     const [user] = await db
       .select(userColumnsWithoutPassword)
@@ -38,6 +43,7 @@ export class UserService {
     return user!;
   }
 
+  @CacheInvalidate({ tags: [CacheTags.users.byId] })
   static async updateStatus(
     id: string,
     status: UserStatus,
@@ -50,7 +56,5 @@ export class UserService {
         deactivatedAt: status === "inactive" ? new Date() : null,
       })
       .where(eq(users.id, id));
-
-    await Cache.invalidate(["user"], id);
   }
 }

@@ -7,4 +7,8 @@ export const router: Router = express.Router();
 
 router
   .route("/profile")
-  .get(RateLimit({ windowMin: 15, max: 30 }), authenticate, UserController.profile);
+  .get(
+    RateLimit({ windowMin: 15, limit: 30 }),
+    authenticate,
+    UserController.profile,
+  );

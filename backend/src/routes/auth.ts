@@ -7,12 +7,16 @@ export const router: Router = express.Router();
 
 router
   .route("/signup")
-  .post(RateLimit({ windowMin: 60, max: 5 }), AuthController.signUp);
+  .post(RateLimit({ windowMin: 60, limit: 5 }), AuthController.signUp);
 
 router
   .route("/login")
-  .post(RateLimit({ windowMin: 15, max: 10 }), AuthController.login);
+  .post(RateLimit({ windowMin: 15, limit: 10 }), AuthController.login);
 
 router
   .route("/logout")
-  .post(RateLimit({ windowMin: 15, max: 30 }), authenticate, AuthController.logout);
+  .post(
+    RateLimit({ windowMin: 15, limit: 30 }),
+    authenticate,
+    AuthController.logout,
+  );
