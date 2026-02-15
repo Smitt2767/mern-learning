@@ -57,4 +57,13 @@ export class UserService {
       })
       .where(eq(users.id, id));
   }
+
+  @CacheInvalidate({ tags: [CacheTags.users.byId] })
+  static async updateProfileImage(
+    id: string,
+    profileImage: string,
+    tx: DbInstance = db,
+  ): Promise<void> {
+    await tx.update(users).set({ profileImage }).where(eq(users.id, id));
+  }
 }

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { OAUTH_PROVIDERS } from "../index.js";
 
 export const signupSchema = z.object({
   firstName: z
@@ -53,3 +54,9 @@ export const loginSchema = z.object({
 });
 
 export type LoginInput = z.infer<typeof loginSchema>;
+
+export const oauthProviderParamSchema = z.object({
+  provider: z.enum(OAUTH_PROVIDERS, {
+    message: "Unsupported OAuth provider",
+  }),
+});

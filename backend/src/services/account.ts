@@ -22,4 +22,17 @@ export class AccountService {
       where: and(eq(accounts.userId, userId), eq(accounts.provider, provider)),
     });
   }
+
+  static async findByProviderAndAccountId(
+    provider: AccountProvider,
+    providerAccountId: string,
+    tx: DbInstance = db,
+  ): Promise<Account | undefined> {
+    return tx.query.accounts.findFirst({
+      where: and(
+        eq(accounts.provider, provider),
+        eq(accounts.providerAccountId, providerAccountId),
+      ),
+    });
+  }
 }

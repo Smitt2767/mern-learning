@@ -7,7 +7,7 @@ export async function logout(req: Request, res: Response): Promise<void> {
   await SessionService.deleteById(req.sessionId!);
 
   Cookie.delete(res, "access_token");
-  Cookie.delete(res, "refresh_token", { path: "/api/auth" });
+  Cookie.delete(res, "refresh_token");
 
   res.status(200).json({
     success: true,

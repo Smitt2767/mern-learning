@@ -73,7 +73,6 @@ export async function signUp(req: Request, res: Response): Promise<void> {
 
         Cookie.set(res, "refresh_token", refreshToken, {
           maxAge: appConfig.auth.refreshToken.maxAge,
-          path: "/api/auth",
         });
 
         const { password: _, ...sanitizedUser } = user;

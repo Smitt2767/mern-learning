@@ -17,7 +17,7 @@ function extractToken(req: Request): string | undefined {
 
 function clearSession(res: Response, sessionId: string): Promise<void> {
   Cookie.delete(res, "access_token");
-  Cookie.delete(res, "refresh_token", { path: "/api/auth" });
+  Cookie.delete(res, "refresh_token");
   return SessionService.deleteById(sessionId);
 }
 

@@ -2,11 +2,11 @@ import { createEnv } from '@t3-oss/env-core'
 import { z } from 'zod'
 
 export const env = createEnv({
-  server: {
-    SERVER_URL: z.url(),
-  },
+  server: {},
   clientPrefix: 'VITE_',
-  client: {},
+  client: {
+    VITE_SERVER_URL: z.url(),
+  },
   runtimeEnv: import.meta.env,
   emptyStringAsUndefined: true,
 })
