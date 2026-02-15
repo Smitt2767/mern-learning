@@ -20,7 +20,16 @@ export class SessionService {
 
   static async create(data: NewSession, tx: DbInstance = db): Promise<Session> {
     const [session] = await tx.insert(sessions).values(data).returning();
-    Cache.set("session", "oneWeek", data.userId);
+    Cache.set("session", "oneWeek", data, data.userId);
     return session!;
+  }
+
+  static async deleteById(
+    id: string,
+    userId: string,
+    tx: DbInstance = db,
+  ): Promise<void> {
+    await tx.delete(sessions).where(eq(sessions.id, id));
+    Cache.invalidate(["session"], userId);
   }
 }

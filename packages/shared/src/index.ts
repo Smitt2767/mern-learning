@@ -17,4 +17,6 @@ export {
   signupFormSchema,
   type SignupInput,
   type SignupFormInput,
+  loginSchema,
+  type LoginInput,
 } from "./schemas/index.js";
