@@ -38,4 +38,12 @@ export class SessionService {
   static async deleteByUserId(userId: string, tx: DbInstance = db) {
     await tx.delete(sessions).where(eq(sessions.userId, userId));
   }
+
+  @CacheInvalidate({ tags: [CacheTags.sessions.byId] })
+  static async rotate(oldSessionId: string, newSession: NewSession) {
+    return db.transaction(async (tx) => {
+      await SessionService.deleteById(oldSessionId, tx);
+      return SessionService.create(newSession, tx);
+    });
+  }
 }

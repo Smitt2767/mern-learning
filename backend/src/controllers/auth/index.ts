@@ -4,6 +4,7 @@ import { login } from "./login.js";
 import { logout } from "./logout.js";
 import { oauthCallback } from "./oauthCallback.js";
 import { oauthRedirect } from "./oauthRedirect.js";
+import { refresh } from "./refresh.js";
 import { resetPassword } from "./resetPassword.js";
 import { signUp } from "./signup.js";
 
@@ -16,4 +17,5 @@ export class AuthController {
   static forgotPassword = forgotPassword;
   static resetPassword = resetPassword;
   static changePassword = changePassword;
+  static refresh = refresh;
 }

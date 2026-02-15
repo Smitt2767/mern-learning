@@ -44,3 +44,7 @@ router
     authenticate,
     AuthController.changePassword,
   );
+
+router
+  .route("/refresh")
+  .post(RateLimit({ windowMin: 15, limit: 20 }), AuthController.refresh);

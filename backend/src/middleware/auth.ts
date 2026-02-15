@@ -1,5 +1,6 @@
 import { USER_STATUS, type UserRole } from "@mern/shared";
 import type { NextFunction, Request, Response } from "express";
+import jwt from "jsonwebtoken";
 
 import { SessionService } from "../services/session.js";
 import { UserService } from "../services/user.js";
@@ -28,10 +29,19 @@ export async function authenticate(
 ): Promise<void> {
   const token = extractToken(req);
   if (!token) {
-    throw AppError.unauthorized();
+    throw AppError.unauthorized("No access token provided");
   }
 
-  const payload = Jwt.verifyAccessToken(token);
+  let payload: ReturnType<typeof Jwt.verifyAccessToken>;
+  try {
+    payload = Jwt.verifyAccessToken(token);
+  } catch (err) {
+    if (err instanceof jwt.TokenExpiredError) {
+      // FE interceptor uses this specific message to trigger /refresh
+      throw AppError.unauthorized("Access token expired");
+    }
+    throw AppError.unauthorized("Invalid access token");
+  }
 
   const session = await SessionService.findById(
     payload.userId,
