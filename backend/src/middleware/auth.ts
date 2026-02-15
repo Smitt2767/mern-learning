@@ -33,7 +33,10 @@ export async function authenticate(
 
   const payload = Jwt.verifyAccessToken(token);
 
-  const session = await SessionService.findById(payload.sessionId);
+  const session = await SessionService.findById(
+    payload.userId,
+    payload.sessionId,
+  );
   if (!session || session.expiresAt < new Date()) {
     throw AppError.unauthorized("Session expired");
   }
