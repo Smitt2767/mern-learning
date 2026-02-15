@@ -10,7 +10,9 @@ import { Cookie } from "../../utils/cookie.js";
 import { Jwt } from "../../utils/jwt.js";
 
 export async function refresh(req: Request, res: Response): Promise<void> {
-  const refreshToken = Cookie.get(req, "refresh_token");
+  const refreshToken =
+    Cookie.get(req, "refresh_token") ??
+    (req.headers["x-refresh-token"] as string | undefined);
   if (!refreshToken) {
     throw AppError.unauthorized("No refresh token provided");
   }
@@ -25,7 +27,7 @@ export async function refresh(req: Request, res: Response): Promise<void> {
 
   // Session not found or DB-level expiry passed
   if (!session || session.expiresAt < new Date()) {
-    Cookie.delete(res, "refresh_token", { path: "/api/auth" });
+    Cookie.delete(res, "refresh_token");
     throw AppError.unauthorized("Session expired, please log in again");
   }
 
@@ -34,7 +36,7 @@ export async function refresh(req: Request, res: Response): Promise<void> {
     // Potential token theft — nuke the entire session
     await SessionService.deleteById(session.id);
     Cookie.delete(res, "access_token");
-    Cookie.delete(res, "refresh_token", { path: "/api/auth" });
+    Cookie.delete(res, "refresh_token");
     throw AppError.unauthorized("Refresh token reuse detected");
   }
 
@@ -46,7 +48,7 @@ export async function refresh(req: Request, res: Response): Promise<void> {
   if (user.status === USER_STATUS.SUSPENDED) {
     await SessionService.deleteById(session.id);
     Cookie.delete(res, "access_token");
-    Cookie.delete(res, "refresh_token", { path: "/api/auth" });
+    Cookie.delete(res, "refresh_token");
     throw AppError.forbidden("Your account has been suspended");
   }
 
@@ -78,7 +80,6 @@ export async function refresh(req: Request, res: Response): Promise<void> {
 
   Cookie.set(res, "refresh_token", newRefreshToken, {
     maxAge: appConfig.auth.refreshToken.maxAge,
-    path: "/api/auth",
   });
 
   res.status(200).json({

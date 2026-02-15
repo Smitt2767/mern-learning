@@ -22,6 +22,21 @@ function clearSession(res: Response, sessionId: string): Promise<void> {
   return SessionService.deleteById(sessionId);
 }
 
+function verifyToken(token: string) {
+  try {
+    return Jwt.verifyAccessToken(token);
+  } catch (err) {
+    if (err instanceof jwt.TokenExpiredError) {
+      throw AppError.tokenExpired();
+    }
+    if (err instanceof jwt.JsonWebTokenError) {
+      throw AppError.invalidToken();
+    }
+
+    throw AppError.unauthorized();
+  }
+}
+
 export async function authenticate(
   req: Request,
   res: Response,
@@ -29,26 +44,17 @@ export async function authenticate(
 ): Promise<void> {
   const token = extractToken(req);
   if (!token) {
-    throw AppError.unauthorized("No access token provided");
+    throw AppError.unauthorized();
   }
 
-  let payload: ReturnType<typeof Jwt.verifyAccessToken>;
-  try {
-    payload = Jwt.verifyAccessToken(token);
-  } catch (err) {
-    if (err instanceof jwt.TokenExpiredError) {
-      // FE interceptor uses this specific message to trigger /refresh
-      throw AppError.unauthorized("Access token expired");
-    }
-    throw AppError.unauthorized("Invalid access token");
-  }
+  const payload = verifyToken(token);
 
   const session = await SessionService.findById(
     payload.userId,
     payload.sessionId,
   );
   if (!session || session.expiresAt < new Date()) {
-    throw AppError.unauthorized("Session expired");
+    throw AppError.sessionExpired();
   }
 
   const user = await UserService.findById(payload.userId);

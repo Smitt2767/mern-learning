@@ -1,4 +1,5 @@
 import { Logger } from "@mern/logger";
+import { ERROR_CODE, type ErrorCode } from "@mern/shared";
 import type { NextFunction, Request, Response } from "express";
 import { ZodError } from "zod";
 
@@ -17,16 +18,19 @@ export function globalErrorHandler(
 
   let statusCode = 500;
   let message = "Internal Server Error";
+  let code: ErrorCode = ERROR_CODE.INTERNAL_ERROR;
   let isOperational = false;
   let errors: { field: string; message: string }[] | undefined;
 
   if (err instanceof AppError) {
     statusCode = err.statusCode;
     message = err.message;
+    code = err.code;
     isOperational = err.isOperational;
   } else if (err instanceof ZodError) {
     statusCode = 400;
     message = "Validation failed";
+    code = ERROR_CODE.VALIDATION_ERROR;
     isOperational = true;
     errors = err.issues.map((issue) => ({
       field: issue.path.join("."),
@@ -40,6 +44,7 @@ export function globalErrorHandler(
   ) {
     statusCode = 400;
     message = "Invalid JSON in request body";
+    code = ERROR_CODE.BAD_REQUEST;
     isOperational = true;
   }
 
@@ -52,6 +57,7 @@ export function globalErrorHandler(
   const response: Record<string, unknown> = {
     success: false,
     message,
+    code,
   };
 
   if (errors) {
