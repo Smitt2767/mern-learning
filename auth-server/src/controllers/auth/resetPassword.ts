@@ -1,11 +1,11 @@
 import { resetPasswordSchema } from "@mern/core";
 import type { Request, Response } from "express";
 
-import { db } from "../../db/index.js";
+import { AppError, Password } from "@mern/server";
+import { db } from "../../config/db.js";
 import { PasswordResetService } from "../../services/password-reset.js";
 import { SessionService } from "../../services/session.js";
 import { UserService } from "../../services/user.js";
-import { AppError, Password } from "@mern/server";
 
 export async function resetPassword(
   req: Request,

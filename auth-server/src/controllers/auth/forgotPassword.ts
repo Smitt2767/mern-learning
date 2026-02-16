@@ -1,8 +1,8 @@
 import { forgotPasswordSchema } from "@mern/core";
 import type { Request, Response } from "express";
 
+import { db } from "../../config/db.js";
 import { env } from "../../config/env.js";
-import { db } from "../../db/index.js";
 import { PasswordResetService } from "../../services/password-reset.js";
 import { UserService } from "../../services/user.js";
 

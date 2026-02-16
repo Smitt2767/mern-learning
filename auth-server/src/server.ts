@@ -3,9 +3,9 @@ import { BaseServer } from "@mern/server";
 import { Cache } from "@mern/cache";
 import { cookieOptions } from "./config/cookies.js";
 import { corsOptions } from "./config/cors.js";
+import { database } from "./config/db.js";
 import { env } from "./config/env.js";
 import redis from "./config/redis.js";
-import { database } from "./db/index.js";
 import { router as authRouter } from "./routes/auth.js";
 import { router as userRouter } from "./routes/user.js";
 

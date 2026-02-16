@@ -2,7 +2,7 @@ import type { AccountProvider } from "@mern/core";
 import { and, eq } from "drizzle-orm";
 
 import { accounts, type DbInstance, type NewAccount } from "@mern/database";
-import { db } from "../db/index.js";
+import { db } from "../config/db.js";
 
 export class AccountService {
   private constructor() {}

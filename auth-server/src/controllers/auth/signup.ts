@@ -2,12 +2,12 @@ import { ACCOUNT_PROVIDER, signupSchema } from "@mern/core";
 import type { Request, Response } from "express";
 import crypto from "node:crypto";
 
+import { AppError, Cookie, Jwt, Password } from "@mern/server";
 import { appConfig } from "../../config/app.js";
-import { db } from "../../db/index.js";
+import { db } from "../../config/db.js";
 import { AccountService } from "../../services/account.js";
 import { SessionService } from "../../services/session.js";
 import { UserService } from "../../services/user.js";
-import { AppError, Cookie, Jwt, Password } from "@mern/server";
 
 export async function signUp(req: Request, res: Response): Promise<void> {
   const input = signupSchema.parse(req.body);

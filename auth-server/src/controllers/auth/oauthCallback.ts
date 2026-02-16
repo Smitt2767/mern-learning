@@ -6,13 +6,13 @@ import {
 import type { Request, Response } from "express";
 import crypto from "node:crypto";
 
+import { AppError, Cookie, Jwt } from "@mern/server";
 import { appConfig } from "../../config/app.js";
+import { db } from "../../config/db.js";
 import { env } from "../../config/env.js";
-import { db } from "../../db/index.js";
 import { AccountService } from "../../services/account.js";
 import { SessionService } from "../../services/session.js";
 import { UserService } from "../../services/user.js";
-import { AppError, Cookie, Jwt } from "@mern/server";
 import { getOAuthProvider } from "../../utils/oauth/index.js";
 
 export async function oauthCallback(

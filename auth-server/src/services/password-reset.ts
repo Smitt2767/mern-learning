@@ -2,7 +2,7 @@ import { passwordResetTokens, type DbInstance } from "@mern/database";
 import { and, eq, gt, isNull } from "drizzle-orm";
 import crypto from "node:crypto";
 import { appConfig } from "../config/app.js";
-import { db } from "../db/index.js";
+import { db } from "../config/db.js";
 
 export class PasswordResetService {
   private constructor() {}

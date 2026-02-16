@@ -1,10 +1,10 @@
 import { changePasswordSchema } from "@mern/core";
 import type { Request, Response } from "express";
 
-import { db } from "../../db/index.js";
+import { AppError, Cookie, Password } from "@mern/server";
+import { db } from "../../config/db.js";
 import { SessionService } from "../../services/session.js";
 import { UserService } from "../../services/user.js";
-import { AppError, Cookie, Password } from "@mern/server";
 
 export async function changePassword(
   req: Request,
