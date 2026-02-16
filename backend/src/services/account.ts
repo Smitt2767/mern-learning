@@ -1,4 +1,4 @@
-import type { AccountProvider } from "@mern/shared";
+import type { AccountProvider } from "@mern/core";
 import { and, eq } from "drizzle-orm";
 
 import { db } from "../db/index.js";

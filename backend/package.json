@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@mern/logger": "workspace:^",
-    "@mern/shared": "workspace:^",
+    "@mern/core": "workspace:^",
     "@t3-oss/env-core": "^0.13.10",
     "bcryptjs": "^3.0.3",
     "cookie-parser": "^1.4.7",

@@ -14,7 +14,7 @@ Route: $ARGUMENTS
 
 ### 1. Zod validation schema
 
-Create `packages/shared/src/schemas/<domain>.ts`:
+Create `packages/core/src/schemas/<domain>.ts`:
 
 ```ts
 import { z } from "zod";
@@ -26,19 +26,19 @@ export const <action>Schema = z.object({
 export type <Action>Input = z.infer<typeof <action>Schema>;
 ```
 
-Export from `packages/shared/src/schemas/index.ts`:
+Export from `packages/core/src/schemas/index.ts`:
 
 ```ts
 export { <action>Schema, type <Action>Input } from "./<domain>.js";
 ```
 
-Export from `packages/shared/src/index.ts`:
+Export from `packages/core/src/index.ts`:
 
 ```ts
 export { <action>Schema, type <Action>Input } from "./schemas/index.js";
 ```
 
-Build: `pnpm --filter @mern/shared build`
+Build: `pnpm --filter @mern/core build`
 
 ### 2. DB schema (if new table needed)
 
@@ -197,7 +197,7 @@ export class <Domain>Service {
 Create `backend/src/controllers/<domain>/<action>.ts`:
 
 ```ts
-import { <action>Schema } from "@mern/shared";
+import { <action>Schema } from "@mern/core";
 import type { Request, Response } from "express";
 
 import { db } from "../../db/index.js";

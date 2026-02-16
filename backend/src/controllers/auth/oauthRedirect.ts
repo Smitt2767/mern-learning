@@ -1,4 +1,4 @@
-import { oauthProviderParamSchema } from "@mern/shared";
+import { oauthProviderParamSchema } from "@mern/core";
 import type { Request, Response } from "express";
 import { getOAuthProvider } from "../../utils/oauth/index.js";
 

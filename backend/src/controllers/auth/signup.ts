@@ -1,4 +1,4 @@
-import { ACCOUNT_PROVIDER, signupSchema } from "@mern/shared";
+import { ACCOUNT_PROVIDER, signupSchema } from "@mern/core";
 import type { Request, Response } from "express";
 import crypto from "node:crypto";
 

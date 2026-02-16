@@ -1,4 +1,4 @@
-import { ERROR_CODE, type ErrorCode } from "@mern/shared";
+import { ERROR_CODE, type ErrorCode } from "@mern/core";
 
 export class AppError extends Error {
   public readonly statusCode: number;

@@ -1,4 +1,4 @@
-import { resetPasswordSchema } from "@mern/shared";
+import { resetPasswordSchema } from "@mern/core";
 import type { Request, Response } from "express";
 
 import { db } from "../../db/index.js";

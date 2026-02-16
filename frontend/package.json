@@ -15,7 +15,7 @@
     "@base-ui/react": "^1.2.0",
     "@fontsource-variable/noto-sans": "^5.2.10",
     "@mern/logger": "workspace:^",
-    "@mern/shared": "workspace:^",
+    "@mern/core": "workspace:^",
     "@t3-oss/env-core": "^0.13.8",
     "@tailwindcss/vite": "^4.1.18",
     "@tanstack/react-devtools": "^0.7.0",

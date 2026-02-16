@@ -2,7 +2,7 @@ import {
   ACCOUNT_PROVIDER,
   USER_STATUS,
   oauthProviderParamSchema,
-} from "@mern/shared";
+} from "@mern/core";
 import type { Request, Response } from "express";
 import crypto from "node:crypto";
 

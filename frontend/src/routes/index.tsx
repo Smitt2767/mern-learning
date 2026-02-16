@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button'
 import { env } from '@/env'
-import type { OAuthProvider } from '@mern/shared'
+import type { OAuthProvider } from '@mern/core'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/')({

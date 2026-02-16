@@ -1,5 +1,5 @@
+import { ERROR_CODE, type ErrorCode } from "@mern/core";
 import { Logger } from "@mern/logger";
-import { ERROR_CODE, type ErrorCode } from "@mern/shared";
 import type { NextFunction, Request, Response } from "express";
 import { ZodError } from "zod";
 

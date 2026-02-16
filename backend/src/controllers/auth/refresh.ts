@@ -1,4 +1,4 @@
-import { USER_STATUS } from "@mern/shared";
+import { USER_STATUS } from "@mern/core";
 import type { Request, Response } from "express";
 import crypto from "node:crypto";
 

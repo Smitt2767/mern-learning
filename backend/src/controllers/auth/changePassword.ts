@@ -1,4 +1,4 @@
-import { changePasswordSchema } from "@mern/shared";
+import { changePasswordSchema } from "@mern/core";
 import type { Request, Response } from "express";
 
 import { db } from "../../db/index.js";
@@ -12,9 +12,7 @@ export async function changePassword(
   req: Request,
   res: Response,
 ): Promise<void> {
-  const { currentPassword, newPassword } = changePasswordSchema.parse(
-    req.body,
-  );
+  const { currentPassword, newPassword } = changePasswordSchema.parse(req.body);
 
   const user = await UserService.findByEmail(req.user!.email);
   if (!user) {

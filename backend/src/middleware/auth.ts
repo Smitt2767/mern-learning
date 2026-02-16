@@ -1,4 +1,4 @@
-import { USER_STATUS, type UserRole } from "@mern/shared";
+import { USER_STATUS, type UserRole } from "@mern/core";
 import type { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 

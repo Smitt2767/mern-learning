@@ -1,7 +1,7 @@
 {
-  "name": "@mern/shared",
+  "name": "@mern/core",
   "version": "0.1.0",
-  "description": "Shared types and constants for MERN project",
+  "description": "Core types, constants and validation schemas for MERN project",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

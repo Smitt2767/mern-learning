@@ -1,4 +1,4 @@
-import { type UserStatus } from "@mern/shared";
+import { type UserStatus } from "@mern/core";
 import { eq, getTableColumns } from "drizzle-orm";
 
 import { CacheKeys } from "../cache/keys.js";

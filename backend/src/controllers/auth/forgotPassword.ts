@@ -1,4 +1,4 @@
-import { forgotPasswordSchema } from "@mern/shared";
+import { forgotPasswordSchema } from "@mern/core";
 import type { Request, Response } from "express";
 
 import { env } from "../../config/env.js";

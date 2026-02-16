@@ -1,4 +1,4 @@
-import { ACCOUNT_PROVIDERS, USER_ROLES, USER_STATUSES } from "@mern/shared";
+import { ACCOUNT_PROVIDERS, USER_ROLES, USER_STATUSES } from "@mern/core";
 import { pgEnum } from "drizzle-orm/pg-core";
 
 export const userRoleEnum = pgEnum("user_role", USER_ROLES);
