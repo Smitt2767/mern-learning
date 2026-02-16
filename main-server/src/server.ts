@@ -6,7 +6,7 @@ import hpp from "hpp";
 import morgan from "morgan";
 
 import { corsConfig } from "./config/cors.js";
-import { connectDB } from "./db/index.js";
+import { database } from "./db/index.js";
 import { globalErrorHandler } from "./middleware/error-handler.js";
 import { router as authRouter } from "./routes/auth.js";
 import { router as userRouter } from "./routes/user.js";
@@ -27,7 +27,7 @@ class Server {
   }
 
   public config() {
-    connectDB();
+    database.connect();
 
     // Trust the first proxy so req.ip returns the real client IP
     // instead of the proxy's IP (e.g., Nginx, AWS ALB, Cloudflare)

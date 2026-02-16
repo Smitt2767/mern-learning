@@ -1,10 +1,9 @@
+import { sessions, type DbInstance, type NewSession } from "@mern/database";
 import { eq } from "drizzle-orm";
 import { CacheKeys } from "../cache/keys.js";
 import { CacheTags } from "../cache/tags.js";
 import { db } from "../db/index.js";
-import { sessions, type NewSession } from "../db/schema/index.js";
 import { CacheInvalidate, Cacheable } from "../decorators/cache.js";
-import type { DbInstance } from "../types/index.js";
 
 export class SessionService {
   private constructor() {}

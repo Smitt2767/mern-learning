@@ -1,12 +1,16 @@
 import { type UserStatus } from "@mern/core";
 import { eq, getTableColumns } from "drizzle-orm";
 
+import {
+  users,
+  type DbInstance,
+  type NewUser,
+  type User,
+} from "@mern/database";
 import { CacheKeys } from "../cache/keys.js";
 import { CacheTags } from "../cache/tags.js";
 import { db } from "../db/index.js";
-import { users, type NewUser, type User } from "../db/schema/index.js";
 import { CacheInvalidate, Cacheable } from "../decorators/cache.js";
-import type { DbInstance } from "../types/index.js";
 
 export type SessionUser = Omit<User, "password">;
 
