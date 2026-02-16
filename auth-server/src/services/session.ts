@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm";
 import { CacheKeys } from "../cache/keys.js";
 import { CacheTags } from "../cache/tags.js";
 import { db } from "../db/index.js";
-import { CacheInvalidate, Cacheable } from "../decorators/cache.js";
+import { CacheInvalidate, Cacheable } from "@mern/cache";
 
 export class SessionService {
   private constructor() {}

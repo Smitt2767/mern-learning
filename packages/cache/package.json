@@ -1,0 +1,38 @@
+{
+  "name": "@mern/cache",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "imports": {
+    "#src/*": "./dist/*"
+  },
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@mern/core": "workspace:^",
+    "@mern/logger": "workspace:^"
+  },
+  "peerDependencies": {
+    "ioredis": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "ioredis": "^5.9.3",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}

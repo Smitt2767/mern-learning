@@ -1,4 +1,4 @@
-import { generateCacheKey } from "./index.js";
+import { generateCacheKey } from "@mern/cache";
 
 export const CacheKeys = {
   users: {

@@ -5,7 +5,9 @@ import helmet from "helmet";
 import hpp from "hpp";
 import morgan from "morgan";
 
+import { Cache } from "@mern/cache";
 import { corsConfig } from "./config/cors.js";
+import redis from "./config/redis.js";
 import { database } from "./db/index.js";
 import { globalErrorHandler } from "./middleware/error-handler.js";
 import { router as authRouter } from "./routes/auth.js";
@@ -28,6 +30,7 @@ class Server {
 
   public config() {
     database.connect();
+    Cache.init(redis);
 
     // Trust the first proxy so req.ip returns the real client IP
     // instead of the proxy's IP (e.g., Nginx, AWS ALB, Cloudflare)

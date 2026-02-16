@@ -21,6 +21,7 @@
     "#src/*": "./dist/*"
   },
   "dependencies": {
+    "@mern/cache": "workspace:^",
     "@mern/core": "workspace:^",
     "@mern/database": "workspace:^",
     "@mern/logger": "workspace:^",

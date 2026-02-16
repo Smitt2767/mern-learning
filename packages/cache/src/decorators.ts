@@ -1,6 +1,6 @@
 import { Logger } from "@mern/logger";
-import { Cache } from "../cache/index.js";
-import { type CacheTime } from "../config/redis.js";
+import type { CacheTime } from "./constants.js";
+import { Cache } from "./cache.js";
 
 interface CacheableOptions<TArgs extends unknown[]> {
   key: (...args: TArgs) => string;

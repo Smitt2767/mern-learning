@@ -1,5 +1,5 @@
 import crypto from "node:crypto";
-import { Cache } from "../../cache/index.js";
+import { Cache } from "@mern/cache";
 import { CacheKeys } from "../../cache/keys.js";
 import { env } from "../../config/env.js";
 import type { OAuthProvider, OAuthUserProfile } from "../../types/index.js";
