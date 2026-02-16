@@ -1,4 +1,4 @@
 packages:
   - "packages/*"
-  - "main-server"
+  - "auth-server"
   - "admin"
