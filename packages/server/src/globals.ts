@@ -1,6 +1,4 @@
-// types/express.d.ts
-
-import type { SessionUser } from "../services/user.ts";
+import type { SessionUser } from "@mern/core";
 
 declare global {
   namespace Express {
@@ -10,3 +8,5 @@ declare global {
     }
   }
 }
+
+export {};

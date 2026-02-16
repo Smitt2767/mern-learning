@@ -1,7 +1,7 @@
 // ─── Registry ─────────────────────────────────────────────────────────────────
 
 import type { OAuthProvider, OAuthUserProfile } from "../../types/index.js";
-import { AppError } from "../app-error.js";
+import { AppError } from "@mern/server";
 import type { BaseOAuthProvider } from "./base.js";
 import { gitHubOAuthProvider } from "./github.js";
 import { googleOAuthProvider } from "./google.js";

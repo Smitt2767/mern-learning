@@ -5,8 +5,7 @@ import { db } from "../../db/index.js";
 import { PasswordResetService } from "../../services/password-reset.js";
 import { SessionService } from "../../services/session.js";
 import { UserService } from "../../services/user.js";
-import { AppError } from "../../utils/app-error.js";
-import { Password } from "../../utils/password.js";
+import { AppError, Password } from "@mern/server";
 
 export async function resetPassword(
   req: Request,

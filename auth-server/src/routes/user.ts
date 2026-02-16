@@ -1,14 +1,13 @@
 import express, { Router } from "express";
 import { UserController } from "../controllers/user/index.js";
-import { authenticate } from "../middleware/auth.js";
-import { RateLimit } from "../middleware/rate-limit.js";
+import { authenticate, rateLimit } from "../middleware/index.js";
 
 export const router: Router = express.Router();
 
 router
   .route("/profile")
   .get(
-    RateLimit({ windowMin: 15, limit: 30 }),
+    rateLimit({ windowMin: 15, limit: 30 }),
     authenticate,
     UserController.profile,
   );

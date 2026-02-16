@@ -12,9 +12,7 @@ import { db } from "../../db/index.js";
 import { AccountService } from "../../services/account.js";
 import { SessionService } from "../../services/session.js";
 import { UserService } from "../../services/user.js";
-import { AppError } from "../../utils/app-error.js";
-import { Cookie } from "../../utils/cookie.js";
-import { Jwt } from "../../utils/jwt.js";
+import { AppError, Cookie, Jwt } from "@mern/server";
 import { getOAuthProvider } from "../../utils/oauth/index.js";
 
 export async function oauthCallback(

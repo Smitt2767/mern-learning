@@ -1,7 +1,6 @@
 import { Logger } from "@mern/logger";
 
-import { env } from "./config/env.js";
-import Server from "./server.js";
+import AuthServer from "./server.js";
 
 process.on("unhandledRejection", (reason: unknown) => {
   Logger.error("UNHANDLED REJECTION:", reason);
@@ -12,5 +11,6 @@ process.on("uncaughtException", (error: Error) => {
   process.exit(1);
 });
 
-const server = new Server(env.SERVER_PORT);
+const server = new AuthServer();
+await server.bootstrap();
 server.start();

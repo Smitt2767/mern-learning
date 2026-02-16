@@ -4,9 +4,7 @@ import type { Request, Response } from "express";
 import { db } from "../../db/index.js";
 import { SessionService } from "../../services/session.js";
 import { UserService } from "../../services/user.js";
-import { AppError } from "../../utils/app-error.js";
-import { Cookie } from "../../utils/cookie.js";
-import { Password } from "../../utils/password.js";
+import { AppError, Cookie, Password } from "@mern/server";
 
 export async function changePassword(
   req: Request,

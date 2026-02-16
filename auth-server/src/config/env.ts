@@ -22,8 +22,8 @@ export const env = createEnv({
     JWT_REFRESH_SECRET: z.string().min(32),
 
     // Token expiry in minutes — used for cookie maxAge and JWT signing
-    JWT_ACCESS_TOKEN_EXPIRY_MINUTES: z.coerce.number().default(10080), // 7 days
-    JWT_REFRESH_TOKEN_EXPIRY_MINUTES: z.coerce.number().default(43200), // 30 days
+    JWT_ACCESS_TOKEN_EXPIRY_SECONDS: z.coerce.number().default(10080), // 7 days
+    JWT_REFRESH_TOKEN_EXPIRY_SECONDS: z.coerce.number().default(43200), // 30 days
 
     // OAuth - GitHub
     GITHUB_CLIENT_ID: z.string(),

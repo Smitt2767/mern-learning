@@ -14,3 +14,5 @@ export interface User {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export type SessionUser = Omit<User, "password">;

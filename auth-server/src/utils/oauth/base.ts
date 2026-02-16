@@ -3,7 +3,7 @@ import { Cache } from "@mern/cache";
 import { CacheKeys } from "../../cache/keys.js";
 import { env } from "../../config/env.js";
 import type { OAuthProvider, OAuthUserProfile } from "../../types/index.js";
-import { AppError } from "../app-error.js";
+import { AppError } from "@mern/server";
 
 /**
  * Abstract base for all OAuth providers.

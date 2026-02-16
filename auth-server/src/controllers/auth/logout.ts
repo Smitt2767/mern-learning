@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 
 import { SessionService } from "../../services/session.js";
-import { Cookie } from "../../utils/cookie.js";
+import { Cookie } from "@mern/server";
 
 export async function logout(req: Request, res: Response): Promise<void> {
   await SessionService.deleteById(req.sessionId!);

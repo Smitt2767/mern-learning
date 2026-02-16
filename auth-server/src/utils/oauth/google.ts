@@ -2,7 +2,7 @@
 
 import { env } from "../../config/env.js";
 import type { OAuthUserProfile } from "../../types/index.js";
-import { AppError } from "../app-error.js";
+import { AppError } from "@mern/server";
 import { BaseOAuthProvider } from "./base.js";
 
 interface GoogleTokenResponse {
