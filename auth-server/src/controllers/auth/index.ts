@@ -1,3 +1,4 @@
+// MODIFIED — added verifyEmail
 import { changePassword } from "./changePassword.js";
 import { forgotPassword } from "./forgotPassword.js";
 import { login } from "./login.js";
@@ -7,6 +8,7 @@ import { oauthRedirect } from "./oauthRedirect.js";
 import { refresh } from "./refresh.js";
 import { resetPassword } from "./resetPassword.js";
 import { signUp } from "./signup.js";
+import { verifyEmail } from "./verify-email.js";
 
 export class AuthController {
   static signUp = signUp;
@@ -18,4 +20,5 @@ export class AuthController {
   static resetPassword = resetPassword;
   static changePassword = changePassword;
   static refresh = refresh;
+  static verifyEmail = verifyEmail; // ← NEW
 }

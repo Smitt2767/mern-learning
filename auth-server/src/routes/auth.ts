@@ -1,3 +1,4 @@
+// MODIFIED — added GET /verify-email route
 import express, { Router } from "express";
 import { AuthController } from "../controllers/auth/index.js";
 import { authenticate, rateLimit } from "../middleware/index.js";
@@ -47,3 +48,18 @@ router
 router
   .route("/refresh")
   .post(rateLimit({ windowMin: 15, limit: 20 }), AuthController.refresh);
+
+/**
+ * GET /api/auth/verify-email?token=<hex>
+ *
+ * No `authenticate` middleware — the user may not be logged in when they
+ * click the link in their email (e.g. they signed up on desktop and clicked
+ * the link on mobile).
+ *
+ * Rate limited tightly: the token itself is already single-use and 64 chars
+ * of cryptographic entropy, so brute-force is infeasible.  The rate limit
+ * is a secondary defence against automated scanning.
+ */
+router
+  .route("/verify-email")
+  .get(rateLimit({ windowMin: 15, limit: 10 }), AuthController.verifyEmail);

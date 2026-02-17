@@ -1,3 +1,4 @@
+// MODIFIED — added markEmailVerified static method
 import { type SessionUser, type UserStatus } from "@mern/core";
 import { eq, getTableColumns } from "drizzle-orm";
 
@@ -70,5 +71,25 @@ export class UserService {
     tx: DbInstance = db,
   ) {
     await tx.update(users).set({ profileImage }).where(eq(users.id, id));
+  }
+
+  /**
+   * Mark a user's email as verified.
+   *
+   * Sets `emailVerifiedAt` to now.  Called inside the verify-email
+   * transaction alongside EmailVerificationService.deleteByUserId().
+   *
+   * @CacheInvalidate ensures the cached user object is purged — the next
+   * call to findById() will fetch a fresh row with emailVerifiedAt set.
+   */
+  @CacheInvalidate({ tags: [CacheTags.users.byId] })
+  static async markEmailVerified(
+    id: string,
+    tx: DbInstance = db,
+  ): Promise<void> {
+    await tx
+      .update(users)
+      .set({ emailVerifiedAt: new Date() })
+      .where(eq(users.id, id));
   }
 }

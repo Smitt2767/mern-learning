@@ -21,9 +21,13 @@
     "dev": "tsc --watch"
   },
   "devDependencies": {
+    "bullmq": "^5.69.3",
     "typescript": "^5.8.0"
   },
   "dependencies": {
     "zod": "^4.3.6"
+  },
+  "peerDependencies": {
+    "bullmq": "^5.69.3"
   }
 }
