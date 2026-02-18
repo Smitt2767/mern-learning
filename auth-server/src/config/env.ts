@@ -12,9 +12,9 @@ export const env = createEnv({
     DB_USERNAME: z.string(),
     DB_PASSWORD: z.string(),
     DB_NAME: z.string(),
-    REDIS_HOST: z.string(),
-    REDIS_PORT: z.coerce.number(),
-    REDIS_PASSWORD: z.string(),
+    REDIS_HOST: z.string().default("localhost"),
+    REDIS_PORT: z.coerce.number().default(6379),
+    REDIS_PASSWORD: z.string().optional(),
     FRONTEND_URL: z.url(),
 
     // JWT

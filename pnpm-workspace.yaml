@@ -1,5 +1,4 @@
 packages:
   - "packages/*"
   - "auth-server"
-  - "mail-server"
   - "admin"
