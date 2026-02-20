@@ -1,17 +1,20 @@
 import { Logger } from "@mern/logger";
 import { QueueRegistry } from "@mern/queue";
+import type { Server } from "node:http";
 import { database } from "./config/db.js";
 import { redis, redisConnectionOptions } from "./config/redis.js";
 import { registerSyncCronJobs } from "./cron/index.js";
+import { startDashboard } from "./dashboard/server.js";
 import { registerMaintenanceWorker } from "./workers/maintenance.js";
 
 /**
  * SyncServer
  *
- * A lightweight, HTTP-free process whose sole responsibility is to:
+ * A lightweight process whose sole responsibility is to:
  *  1. Connect to the database and Redis
  *  2. Spin up BullMQ workers for maintenance jobs
  *  3. Schedule nightly cron jobs via the BullMQ Scheduler
+ *  4. Serve the Bull Board dashboard (port DASHBOARD_PORT, default 5001)
  *
  * Only ONE instance of this process should run in your cluster so that
  * cron jobs are not registered more than once. BullMQ deduplicates
@@ -25,6 +28,8 @@ import { registerMaintenanceWorker } from "./workers/maintenance.js";
  * ```
  */
 export class SyncServer {
+  private dashboardServer: Server | null = null;
+
   // ─── Lifecycle ─────────────────────────────────────────────────────────────
 
   async start(): Promise<void> {
@@ -51,7 +56,10 @@ export class SyncServer {
     // 4. Schedule cron jobs
     await registerSyncCronJobs();
 
-    // 5. Graceful shutdown hooks
+    // 5. Start the Bull Board dashboard (must run after QueueRegistry.init)
+    this.dashboardServer = await startDashboard();
+
+    // 6. Graceful shutdown hooks
     this.registerShutdownHooks();
 
     Logger.success("SyncServer started — workers and cron jobs are live.");
@@ -67,6 +75,16 @@ export class SyncServer {
         await QueueRegistry.shutdown();
         await database.client.end();
         await redis.quit();
+
+        if (this.dashboardServer !== null) {
+          await new Promise<void>((resolve, reject) => {
+            this.dashboardServer!.close((err) => {
+              if (err) reject(err);
+              else resolve();
+            });
+          });
+        }
+
         Logger.success("[sync] Graceful shutdown complete.");
       } catch (err) {
         Logger.error("[sync] Error during shutdown:", err);

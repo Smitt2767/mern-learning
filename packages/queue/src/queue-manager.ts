@@ -5,6 +5,7 @@ import { Queue, type BulkJobOptions, type Job } from "bullmq";
 import {
   DEFAULT_QUEUE_OPTIONS,
   JOB_QUEUE_MAP,
+  QUEUE_NAMES,
   type QueueName,
 } from "./constants/index.js";
 import type { AddJobOptions } from "./types/index.js";
@@ -62,6 +63,13 @@ export class QueueManager {
     }
     QueueManager.connection = connection;
     QueueManager.initialised = true;
+
+    // Eagerly create all known queues so monitoring tools (e.g. Bull Board)
+    // can access them immediately — even before any jobs are enqueued.
+    for (const name of QUEUE_NAMES) {
+      QueueManager.getQueue(name);
+    }
+
     Logger.success("QueueManager initialised.");
   }
 
@@ -130,6 +138,18 @@ export class QueueManager {
   static async drainQueue(name: QueueName): Promise<void> {
     await QueueManager.getQueue(name).drain();
     Logger.info(`Queue "${name}" drained.`);
+  }
+
+  // ─── Monitoring ────────────────────────────────────────────────────────────
+
+  /**
+   * Returns all currently-initialised Queue instances keyed by queue name.
+   * Intended for monitoring tools (e.g. Bull Board) that need direct Queue
+   * references. Must be called after QueueManager.init().
+   */
+  static getQueues(): ReadonlyMap<QueueName, Queue<unknown, unknown>> {
+    QueueManager.assertInitialised();
+    return QueueManager.queues;
   }
 
   // ─── Graceful shutdown ─────────────────────────────────────────────────────

@@ -17,6 +17,13 @@ export const env = createEnv({
     REDIS_HOST: z.string().default("localhost"),
     REDIS_PORT: z.coerce.number().default(6379),
     REDIS_PASSWORD: z.string().optional(),
+
+    // Dashboard
+    DASHBOARD_PORT: z.coerce.number().default(5001),
+    DASHBOARD_USERNAME: z.string().min(1),
+    DASHBOARD_PASSWORD_HASH: z.string().min(1),
+    DASHBOARD_JWT_SECRET: z.string().min(32),
+    DASHBOARD_JWT_EXPIRY_SECONDS: z.coerce.number().default(3600),
   },
   runtimeEnv: process.env,
   emptyStringAsUndefined: true,

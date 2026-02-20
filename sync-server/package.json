@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "tsc-watch --onSuccess \"node dist/index.js\"",
     "build": "tsc",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "generate-hash": "tsx src/scripts/generate-hash.ts"
   },
   "keywords": [],
   "author": "",
@@ -16,17 +17,27 @@
     "#src/*": "./dist/*"
   },
   "dependencies": {
+    "@bull-board/api": "^6.19.0",
+    "@bull-board/express": "^6.19.0",
     "@mern/core": "workspace:^",
     "@mern/database": "workspace:^",
     "@mern/logger": "workspace:^",
     "@mern/queue": "workspace:^",
     "@t3-oss/env-core": "^0.13.10",
+    "bcryptjs": "^3.0.3",
+    "cookie-parser": "^1.4.7",
     "drizzle-orm": "^0.45.1",
+    "express": "^5.2.1",
     "ioredis": "^5.9.3",
+    "jsonwebtoken": "^9.0.3",
     "postgres": "^3.4.8",
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^3.0.0",
+    "@types/cookie-parser": "^1.4.10",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^22.10.2",
     "dotenv": "^17.3.1",
     "tsc-watch": "^7.2.0",
