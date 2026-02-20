@@ -15,6 +15,13 @@
       "when": 1771129419447,
       "tag": "0001_rare_cargill",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1771555390081,
+      "tag": "0002_clumsy_tag",
+      "breakpoints": true
     }
   ]
 }

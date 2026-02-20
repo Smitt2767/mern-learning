@@ -1,4 +1,10 @@
-export { accountProviderEnum, userRoleEnum, userStatusEnum } from "./enums.js";
+export {
+  accountProviderEnum,
+  jobNameEnum,
+  jobStatusEnum,
+  userRoleEnum,
+  userStatusEnum,
+} from "./enums.js";
 
 export {
   accounts,
@@ -12,6 +18,11 @@ export {
   type EmailVerification,
   type NewEmailVerification,
 } from "./email-verifications.js";
+export {
+  jobRecords,
+  type JobRecord,
+  type NewJobRecord,
+} from "./job-records.js";
 export {
   passwordResetTokens,
   passwordResetTokensRelations,

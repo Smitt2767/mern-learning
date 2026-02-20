@@ -1,0 +1,42 @@
+{
+  "name": "@mern/queue",
+  "version": "1.0.0",
+  "description": "BullMQ-based job queue with typed jobs, workers, cron scheduling, and DB persistence",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "imports": {
+    "#src/*": "./dist/*"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@mern/core": "workspace:^",
+    "@mern/database": "workspace:^",
+    "@mern/logger": "workspace:^",
+    "bullmq": "^5.56.0",
+    "drizzle-orm": "^0.45.1"
+  },
+  "peerDependencies": {
+    "ioredis": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "ioredis": "^5.9.3",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}
