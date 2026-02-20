@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+# =============================================================================
+# pre-push hook — syncs ARCHITECTURE.md + CLAUDE.md before every push
+# =============================================================================
+# Git calls this hook with:
+#   $1 = remote name (e.g. origin)
+#   $2 = remote URL
+# stdin lines: "<local_ref> <local_sha> <remote_ref> <remote_sha>"
+# =============================================================================
+
+set -euo pipefail
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+SYNC_SCRIPT="$REPO_ROOT/scripts/sync-docs.sh"
+
+if [ ! -f "$SYNC_SCRIPT" ]; then
+  echo "⚠️  sync-docs.sh not found — skipping docs sync."
+  exit 0
+fi
+
+# Process each ref being pushed (usually just one)
+while IFS=' ' read -r local_ref local_sha remote_ref remote_sha; do
+
+  # Skip branch deletions
+  if [ "$local_sha" = "0000000000000000000000000000000000000000" ]; then
+    continue
+  fi
+
+  # Determine the range of new commits
+  if [ "$remote_sha" = "0000000000000000000000000000000000000000" ]; then
+    # First push to this remote branch — analyze last 5 commits
+    RANGE="HEAD~5..HEAD"
+  else
+    RANGE="$remote_sha..$local_sha"
+  fi
+
+  # Run the sync script
+  set +e
+  bash "$SYNC_SCRIPT" "$RANGE"
+  EXIT_CODE=$?
+  set -e
+
+  if [ $EXIT_CODE -eq 1 ]; then
+    # Docs were updated and amended — abort this push so the amended commit is included
+    echo ""
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "📚 Architecture docs were updated and added to"
+    echo "   your last commit. Run 'git push' again to"
+    echo "   push the updated commit."
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    exit 1
+  fi
+
+  # EXIT_CODE 2 = claude not available, proceed anyway
+  # EXIT_CODE 0 = all good, proceed
+  break  # only process the first ref
+done
+
+exit 0
