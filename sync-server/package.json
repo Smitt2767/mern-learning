@@ -1,0 +1,36 @@
+{
+  "name": "sync-server",
+  "version": "1.0.0",
+  "description": "Background sync server — runs maintenance cron jobs (purge expired sessions & tokens)",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsc-watch --onSuccess \"node dist/index.js\"",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "imports": {
+    "#src/*": "./dist/*"
+  },
+  "dependencies": {
+    "@mern/core": "workspace:^",
+    "@mern/database": "workspace:^",
+    "@mern/logger": "workspace:^",
+    "@mern/queue": "workspace:^",
+    "@t3-oss/env-core": "^0.13.10",
+    "drizzle-orm": "^0.45.1",
+    "ioredis": "^5.9.3",
+    "postgres": "^3.4.8",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "dotenv": "^17.3.1",
+    "tsc-watch": "^7.2.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}
