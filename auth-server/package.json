@@ -25,6 +25,7 @@
     "@mern/core": "workspace:^",
     "@mern/database": "workspace:^",
     "@mern/logger": "workspace:^",
+    "@mern/queue": "workspace:^",
     "@mern/server": "workspace:^",
     "@t3-oss/env-core": "^0.13.10",
     "drizzle-orm": "^0.45.1",

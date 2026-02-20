@@ -1,2 +1,4 @@
-export { env } from "./config/env.js"
-export { mailer } from "./services/mailer.js"
+import { MailServer } from "./server.js"
+
+const server = new MailServer()
+server.start()

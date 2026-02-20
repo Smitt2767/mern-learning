@@ -27,7 +27,7 @@ export class PasswordResetService {
       expiresAt,
     });
 
-    return token;
+    return { token, expiresAt };
   }
 
   static async markAsUsed(id: string, tx: DbInstance = db) {

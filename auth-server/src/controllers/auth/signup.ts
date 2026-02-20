@@ -1,4 +1,5 @@
-import { ACCOUNT_PROVIDER, signupSchema } from "@mern/core";
+import { ACCOUNT_PROVIDER, JOB_NAME, signupSchema } from "@mern/core";
+import { QueueManager } from "@mern/queue";
 import type { Request, Response } from "express";
 import crypto from "node:crypto";
 
@@ -77,6 +78,12 @@ export async function signUp(req: Request, res: Response): Promise<void> {
         return { sanitizedUser, accessToken, refreshToken };
       },
     );
+
+    void QueueManager.add(JOB_NAME.SEND_WELCOME_EMAIL, {
+      userId: sanitizedUser.id,
+      email: sanitizedUser.email,
+      firstName: sanitizedUser.firstName,
+    });
 
     res.status(201).json({
       success: true,

@@ -1,11 +1,12 @@
 import { BaseServer } from "@mern/server";
 
 import { Cache } from "@mern/cache";
+import { QueueManager } from "@mern/queue";
 import { cookieOptions } from "./config/cookies.js";
 import { corsOptions } from "./config/cors.js";
 import { database } from "./config/db.js";
 import { env } from "./config/env.js";
-import redis from "./config/redis.js";
+import redis, { redisConnectionOptions } from "./config/redis.js";
 import { router as authRouter } from "./routes/auth.js";
 import { router as userRouter } from "./routes/user.js";
 
@@ -22,6 +23,7 @@ class AuthServer extends BaseServer {
   protected async configure(): Promise<void> {
     await database.connect();
     Cache.init(redis);
+    QueueManager.init(redisConnectionOptions);
   }
 
   protected registerRoutes(): void {

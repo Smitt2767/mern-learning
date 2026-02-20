@@ -1,8 +1,10 @@
 import {
   ACCOUNT_PROVIDER,
+  JOB_NAME,
   USER_STATUS,
   oauthProviderParamSchema,
 } from "@mern/core";
+import { QueueManager } from "@mern/queue";
 import type { Request, Response } from "express";
 import crypto from "node:crypto";
 
@@ -50,7 +52,7 @@ export async function oauthCallback(
         : ACCOUNT_PROVIDER.GITHUB;
 
     // ── 6. Find or create user (wrapped in transaction) ────────────────────
-    const { user } = await db.transaction(async (tx) => {
+    const { user, isNewUser } = await db.transaction(async (tx) => {
       // Check if this OAuth account already exists
       const existingAccount = await AccountService.findByProviderAndAccountId(
         providerEnum,
@@ -84,7 +86,7 @@ export async function oauthCallback(
           );
         }
 
-        return { user };
+        return { user, isNewUser: false };
       }
 
       // No OAuth account yet — check if this email is already registered
@@ -115,7 +117,7 @@ export async function oauthCallback(
         tx,
       );
 
-      return { user: newUser };
+      return { user: newUser, isNewUser: true };
     });
 
     // ── 7. Create session & sign tokens ────────────────────────────────────
@@ -141,7 +143,16 @@ export async function oauthCallback(
       maxAge: appConfig.auth.refreshToken.maxAge,
     });
 
-    // ── 9. Redirect to frontend ────────────────────────────────────────────
+    // ── 9. Enqueue welcome email for brand-new users ───────────────────────
+    if (isNewUser) {
+      void QueueManager.add(JOB_NAME.SEND_WELCOME_EMAIL, {
+        userId: user.id,
+        email: user.email,
+        firstName: user.firstName,
+      });
+    }
+
+    // ── 10. Redirect to frontend ───────────────────────────────────────────
     res.redirect(`${env.FRONTEND_URL}/auth/callback?success=true`);
   } catch (err: unknown) {
     if (err instanceof AppError) {

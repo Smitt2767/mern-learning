@@ -2,10 +2,14 @@ import { Logger } from "@mern/logger";
 import { Redis } from "ioredis";
 import { env } from "./env.js";
 
-const redis = new Redis({
+export const redisConnectionOptions = {
   host: env.REDIS_HOST,
   port: env.REDIS_PORT,
   password: env.REDIS_PASSWORD,
+} as const;
+
+const redis = new Redis({
+  ...redisConnectionOptions,
   maxRetriesPerRequest: 3,
   retryStrategy(times: number) {
     if (times > 5) {

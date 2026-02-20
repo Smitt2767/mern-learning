@@ -1,8 +1,8 @@
-import { forgotPasswordSchema } from "@mern/core";
+import { JOB_NAME, forgotPasswordSchema } from "@mern/core";
+import { QueueManager } from "@mern/queue";
 import type { Request, Response } from "express";
 
 import { db } from "../../config/db.js";
-import { env } from "../../config/env.js";
 import { PasswordResetService } from "../../services/password-reset.js";
 import { UserService } from "../../services/user.js";
 
@@ -24,15 +24,17 @@ export async function forgotPassword(
     return;
   }
 
-  const token = await db.transaction(async (tx) => {
+  const { token, expiresAt } = await db.transaction(async (tx) => {
     await PasswordResetService.deleteByUserId(user.id, tx);
     return PasswordResetService.createToken(user.id, tx);
   });
 
-  const resetUrl = `${env.FRONTEND_URL}/reset-password?token=${token}`;
-
-  // TODO: Replace with email service
-  console.log(`[Password Reset] Reset URL for ${email}: ${resetUrl}`);
+  void QueueManager.add(JOB_NAME.SEND_PASSWORD_RESET_EMAIL, {
+    userId: user.id,
+    email,
+    token,
+    expiresAt: expiresAt.toISOString(),
+  });
 
   res.status(200).json({
     success: true,
