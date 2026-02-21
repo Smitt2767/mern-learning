@@ -6,9 +6,7 @@
   "scripts": {
     "dev": "pnpm --parallel -r dev",
     "build": "pnpm --parallel -r build",
-    "db:studio": "pnpm --filter auth-server db:studio",
-    "docs:sync": "bash scripts/sync-docs.sh",
-    "prepare": "git config core.hooksPath .githooks"
+    "db:studio": "pnpm --filter auth-server db:studio"
   },
   "keywords": [],
   "author": "",
