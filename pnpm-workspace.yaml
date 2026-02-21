@@ -1,6 +1,7 @@
 packages:
   - "packages/*"
   - "auth-server"
+  - "admin-server"
   - "sync-server"
   - "mail-server"
   - "admin"

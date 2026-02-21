@@ -6,7 +6,7 @@ export const env = createEnv({
   server: {
     NODE_ENV: z.enum(["development", "production", "test"]),
     SERVER_URL: z.url(),
-    SERVER_PORT: z.coerce.number().default(5000),
+    SERVER_PORT: z.coerce.number().default(5001),
     DB_HOST: z.string().default("localhost"),
     DB_PORT: z.coerce.number().default(5432),
     DB_USERNAME: z.string(),
@@ -17,21 +17,11 @@ export const env = createEnv({
     REDIS_PASSWORD: z.string(),
     FRONTEND_URL: z.url(),
 
-    // JWT
+    // JWT — must match auth-server secrets exactly (admin-server only verifies, never signs)
     JWT_ACCESS_SECRET: z.string().min(32),
     JWT_REFRESH_SECRET: z.string().min(32),
-
-    // Token expiry in minutes — used for cookie maxAge and JWT signing
-    JWT_ACCESS_TOKEN_EXPIRY_SECONDS: z.coerce.number().default(10080), // 7 days
-    JWT_REFRESH_TOKEN_EXPIRY_SECONDS: z.coerce.number().default(43200), // 30 days
-
-    // OAuth - GitHub
-    GITHUB_CLIENT_ID: z.string(),
-    GITHUB_CLIENT_SECRET: z.string(),
-
-    // OAuth - Google
-    GOOGLE_CLIENT_ID: z.string(),
-    GOOGLE_CLIENT_SECRET: z.string(),
+    JWT_ACCESS_TOKEN_EXPIRY_SECONDS: z.coerce.number().default(10080),
+    JWT_REFRESH_TOKEN_EXPIRY_SECONDS: z.coerce.number().default(43200),
 
     EXECUTE_BOOT_SCRIPTS: z.coerce.boolean().default(false),
   },

@@ -2,16 +2,16 @@ import { BaseServer } from "@mern/server";
 
 import { Cache } from "@mern/cache";
 import { seedRbac } from "@mern/database";
-import { JobRecordService, QueueManager } from "@mern/queue";
 import { cookieOptions } from "./config/cookies.js";
 import { corsOptions } from "./config/cors.js";
 import { database } from "./config/db.js";
 import { env } from "./config/env.js";
-import redis, { redisConnectionOptions } from "./config/redis.js";
-import { router as authRouter } from "./routes/auth.js";
-import { router as userRouter } from "./routes/user.js";
+import redis from "./config/redis.js";
+import { router as permissionsRouter } from "./routes/permissions.js";
+import { router as rolesRouter } from "./routes/roles.js";
+import { router as usersRouter } from "./routes/users.js";
 
-class AuthServer extends BaseServer {
+class AdminServer extends BaseServer {
   constructor() {
     super({
       port: env.SERVER_PORT,
@@ -25,14 +25,13 @@ class AuthServer extends BaseServer {
     await database.connect();
     env.EXECUTE_BOOT_SCRIPTS && (await seedRbac(database.db));
     Cache.init(redis);
-    QueueManager.init(redisConnectionOptions);
-    JobRecordService.init(database.db);
   }
 
   protected registerRoutes(): void {
-    this.app.use("/api/auth", authRouter);
-    this.app.use("/api/user", userRouter);
+    this.app.use("/api/permissions", permissionsRouter);
+    this.app.use("/api/roles", rolesRouter);
+    this.app.use("/api/users", usersRouter);
   }
 }
 
-export default AuthServer;
+export default AdminServer;
