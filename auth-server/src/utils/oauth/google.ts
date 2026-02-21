@@ -1,6 +1,6 @@
 // ─── Google API DTOs ──────────────────────────────────────────────────────────
 
-import { env } from "../../config/env.js";
+import { env } from "@mern/env";
 import type { OAuthUserProfile } from "../../types/index.js";
 import { AppError } from "@mern/server";
 import { BaseOAuthProvider } from "./base.js";
@@ -29,8 +29,8 @@ class GoogleOAuthProvider extends BaseOAuthProvider {
   readonly authUrl = "https://accounts.google.com/o/oauth2/v2/auth";
   readonly tokenUrl = "https://oauth2.googleapis.com/token";
   readonly userInfoUrl = "https://www.googleapis.com/oauth2/v3/userinfo";
-  readonly clientId = env.GOOGLE_CLIENT_ID;
-  readonly clientSecret = env.GOOGLE_CLIENT_SECRET;
+  readonly clientId = env.GOOGLE_CLIENT_ID!;
+  readonly clientSecret = env.GOOGLE_CLIENT_SECRET!;
   readonly scope = "openid email profile";
 
   /**

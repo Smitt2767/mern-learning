@@ -1,6 +1,6 @@
 import { Logger } from "@mern/logger";
 import { Redis } from "ioredis";
-import { env } from "./env.js";
+import { env } from "@mern/env";
 
 /**
  * Plain connection options — passed to QueueRegistry / BullMQ so that

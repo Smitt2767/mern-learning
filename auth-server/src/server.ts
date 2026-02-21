@@ -6,7 +6,7 @@ import { JobRecordService, QueueManager } from "@mern/queue";
 import { cookieOptions } from "./config/cookies.js";
 import { corsOptions } from "./config/cors.js";
 import { database } from "./config/db.js";
-import { env } from "./config/env.js";
+import { env } from "@mern/env";
 import redis, { redisConnectionOptions } from "./config/redis.js";
 import { router as authRouter } from "./routes/auth.js";
 import { router as userRouter } from "./routes/user.js";
@@ -14,7 +14,7 @@ import { router as userRouter } from "./routes/user.js";
 class AuthServer extends BaseServer {
   constructor() {
     super({
-      port: env.SERVER_PORT,
+      port: env.AUTH_SERVER_PORT,
       corsOptions,
       cookieOptions,
       errorStackTrace: env.NODE_ENV === "development",

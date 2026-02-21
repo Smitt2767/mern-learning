@@ -11,7 +11,7 @@ import crypto from "node:crypto";
 import { AppError, Cookie, Jwt } from "@mern/server";
 import { appConfig } from "../../config/app.js";
 import { db } from "../../config/db.js";
-import { env } from "../../config/env.js";
+import { env } from "@mern/env";
 import { AccountService } from "../../services/account.js";
 import { RoleService } from "../../services/role.js";
 import { SessionService } from "../../services/session.js";

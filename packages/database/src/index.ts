@@ -4,7 +4,7 @@ import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import * as schema from "./schema/index.js";
 
-import { env } from "./env.js";
+import { env } from "@mern/env";
 
 class QueryLogger implements DrizzleLogger {
   logQuery(query: string, params: unknown[]): void {

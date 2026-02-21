@@ -1,4 +1,4 @@
-import { env } from "./env.js"
+import { env } from "@mern/env"
 
 export const redisConnectionOptions = {
   host: env.REDIS_HOST,

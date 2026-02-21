@@ -1,7 +1,7 @@
 import * as React from "react"
 import { Resend } from "resend"
 
-import { env } from "../config/env.js"
+import { env } from "@mern/env"
 import { EmailVerificationEmail } from "../emails/email-verification.js"
 import { ResetPasswordEmail } from "../emails/reset-password.js"
 import { WelcomeEmail } from "../emails/welcome.js"

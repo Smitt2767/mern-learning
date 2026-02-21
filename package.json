@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "pnpm --parallel -r dev",
     "build": "pnpm --parallel -r build",
-    "db:studio": "pnpm --filter auth-server db:studio"
+    "db:studio": "pnpm --filter auth-server db:studio",
+    "env:copy": "sh scripts/copy-env.sh"
   },
   "keywords": [],
   "author": "",

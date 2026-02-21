@@ -1,11 +1,11 @@
 import { Logger } from "@mern/logger";
 import { Redis } from "ioredis";
-import { env } from "./env.js";
+import { env } from "@mern/env";
 
 export const redisConnectionOptions = {
   host: env.REDIS_HOST,
   port: env.REDIS_PORT,
-  password: env.REDIS_PASSWORD,
+  ...(env.REDIS_PASSWORD ? { password: env.REDIS_PASSWORD } : {}),
 } as const;
 
 const redis = new Redis({

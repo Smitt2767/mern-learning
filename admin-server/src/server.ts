@@ -5,7 +5,7 @@ import { seedRbac } from "@mern/database";
 import { cookieOptions } from "./config/cookies.js";
 import { corsOptions } from "./config/cors.js";
 import { database } from "./config/db.js";
-import { env } from "./config/env.js";
+import { env } from "@mern/env";
 import redis from "./config/redis.js";
 import { router as permissionsRouter } from "./routes/permissions.js";
 import { router as rolesRouter } from "./routes/roles.js";
@@ -14,7 +14,7 @@ import { router as usersRouter } from "./routes/users.js";
 class AdminServer extends BaseServer {
   constructor() {
     super({
-      port: env.SERVER_PORT,
+      port: env.ADMIN_SERVER_PORT,
       corsOptions,
       cookieOptions,
       errorStackTrace: env.NODE_ENV === "development",

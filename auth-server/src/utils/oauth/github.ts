@@ -1,6 +1,6 @@
 // ─── GitHub API DTOs ──────────────────────────────────────────────────────────
 
-import { env } from "../../config/env.js";
+import { env } from "@mern/env";
 import type { OAuthUserProfile } from "../../types/index.js";
 import { AppError } from "@mern/server";
 import { BaseOAuthProvider } from "./base.js";
@@ -33,8 +33,8 @@ class GitHubOAuthProvider extends BaseOAuthProvider {
   readonly authUrl = "https://github.com/login/oauth/authorize";
   readonly tokenUrl = "https://github.com/login/oauth/access_token";
   readonly userInfoUrl = "https://api.github.com/user";
-  readonly clientId = env.GITHUB_CLIENT_ID;
-  readonly clientSecret = env.GITHUB_CLIENT_SECRET;
+  readonly clientId = env.GITHUB_CLIENT_ID!;
+  readonly clientSecret = env.GITHUB_CLIENT_SECRET!;
   readonly scope = "read:user user:email";
 
   // GitHub needs no extra auth params — base default `{}` is sufficient.

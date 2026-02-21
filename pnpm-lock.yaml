@@ -137,15 +137,15 @@ importers:
       '@mern/database':
         specifier: workspace:^
         version: link:../packages/database
+      '@mern/env':
+        specifier: workspace:^
+        version: link:../packages/env
       '@mern/logger':
         specifier: workspace:^
         version: link:../packages/logger
       '@mern/server':
         specifier: workspace:^
         version: link:../packages/server
-      '@t3-oss/env-core':
-        specifier: ^0.13.10
-        version: 0.13.10(typescript@5.9.3)(zod@4.3.6)
       drizzle-orm:
         specifier: ^0.45.1
         version: 0.45.1(@neondatabase/serverless@1.0.2)(@types/pg@8.16.0)(pg@8.18.0)(postgres@3.4.8)
@@ -168,9 +168,6 @@ importers:
       '@types/node':
         specifier: ^22.10.2
         version: 22.19.11
-      dotenv:
-        specifier: ^17.3.1
-        version: 17.3.1
       tsc-watch:
         specifier: ^7.2.0
         version: 7.2.0(typescript@5.9.3)
@@ -192,6 +189,9 @@ importers:
       '@mern/database':
         specifier: workspace:^
         version: link:../packages/database
+      '@mern/env':
+        specifier: workspace:^
+        version: link:../packages/env
       '@mern/logger':
         specifier: workspace:^
         version: link:../packages/logger
@@ -201,9 +201,6 @@ importers:
       '@mern/server':
         specifier: workspace:^
         version: link:../packages/server
-      '@t3-oss/env-core':
-        specifier: ^0.13.10
-        version: 0.13.10(typescript@5.9.3)(zod@4.3.6)
       drizzle-orm:
         specifier: ^0.45.1
         version: 0.45.1(@neondatabase/serverless@1.0.2)(@types/pg@8.16.0)(pg@8.18.0)(postgres@3.4.8)
@@ -226,9 +223,6 @@ importers:
       '@types/node':
         specifier: ^22.10.2
         version: 22.19.11
-      dotenv:
-        specifier: ^17.3.1
-        version: 17.3.1
       tsc-watch:
         specifier: ^7.2.0
         version: 7.2.0(typescript@5.9.3)
@@ -247,6 +241,9 @@ importers:
       '@mern/database':
         specifier: workspace:^
         version: link:../packages/database
+      '@mern/env':
+        specifier: workspace:^
+        version: link:../packages/env
       '@mern/logger':
         specifier: workspace:^
         version: link:../packages/logger
@@ -256,9 +253,6 @@ importers:
       '@react-email/components':
         specifier: ^0.0.36
         version: 0.0.36(react-dom@19.0.0(react@19.0.0))(react@19.2.4)
-      '@t3-oss/env-core':
-        specifier: ^0.13.10
-        version: 0.13.10(typescript@5.9.3)(zod@4.3.6)
       drizzle-orm:
         specifier: ^0.45.1
         version: 0.45.1(@neondatabase/serverless@1.0.2)(@types/pg@8.16.0)(pg@8.18.0)(postgres@3.4.8)
@@ -334,12 +328,12 @@ importers:
       '@mern/core':
         specifier: workspace:^
         version: link:../core
+      '@mern/env':
+        specifier: workspace:^
+        version: link:../env
       '@mern/logger':
         specifier: workspace:^
         version: link:../logger
-      '@t3-oss/env-core':
-        specifier: ^0.13.10
-        version: 0.13.10(typescript@5.9.3)(zod@4.3.6)
       drizzle-orm:
         specifier: ^0.45.1
         version: 0.45.1(@neondatabase/serverless@1.0.2)(@types/pg@8.16.0)(pg@8.18.0)(postgres@3.4.8)
@@ -353,9 +347,6 @@ importers:
       '@types/node':
         specifier: ^22.10.2
         version: 22.19.11
-      dotenv:
-        specifier: ^17.3.1
-        version: 17.3.1
       drizzle-kit:
         specifier: ^0.31.9
         version: 0.31.9
@@ -364,6 +355,25 @@ importers:
         version: 4.21.0
       typescript:
         specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/env:
+    dependencies:
+      '@t3-oss/env-core':
+        specifier: ^0.13.10
+        version: 0.13.10(typescript@5.9.3)(zod@4.3.6)
+      dotenv:
+        specifier: ^17.3.1
+        version: 17.3.1
+      zod:
+        specifier: ^4.3.6
+        version: 4.3.6
+    devDependencies:
+      '@types/node':
+        specifier: ^22.10.2
+        version: 22.19.11
+      typescript:
+        specifier: ^5.8.0
         version: 5.9.3
 
   packages/logger:
@@ -490,15 +500,15 @@ importers:
       '@mern/database':
         specifier: workspace:^
         version: link:../packages/database
+      '@mern/env':
+        specifier: workspace:^
+        version: link:../packages/env
       '@mern/logger':
         specifier: workspace:^
         version: link:../packages/logger
       '@mern/queue':
         specifier: workspace:^
         version: link:../packages/queue
-      '@t3-oss/env-core':
-        specifier: ^0.13.10
-        version: 0.13.10(typescript@5.9.3)(zod@4.3.6)
       bcryptjs:
         specifier: ^3.0.3
         version: 3.0.3
@@ -539,9 +549,6 @@ importers:
       '@types/node':
         specifier: ^22.10.2
         version: 22.19.11
-      dotenv:
-        specifier: ^17.3.1
-        version: 17.3.1
       tsc-watch:
         specifier: ^7.2.0
         version: 7.2.0(typescript@5.9.3)

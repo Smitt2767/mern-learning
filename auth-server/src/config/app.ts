@@ -1,4 +1,4 @@
-import { env } from "./env.js";
+import { env } from "@mern/env";
 
 const accessTokenMs = env.JWT_ACCESS_TOKEN_EXPIRY_SECONDS * 1000;
 const refreshTokenMs = env.JWT_REFRESH_TOKEN_EXPIRY_SECONDS * 1000;

@@ -1,5 +1,5 @@
 import type { CookieOptions } from "express";
-import { env } from "./env.js";
+import { env } from "@mern/env";
 
 export const cookieOptions: CookieOptions = {
   path: "/",

@@ -4,7 +4,7 @@ import { AppError } from "@mern/server";
 import type { Request, Response } from "express";
 
 import { db } from "../../config/db.js";
-import { env } from "../../config/env.js";
+import { env } from "@mern/env";
 import { EmailVerificationService } from "../../services/email-verification.js";
 import { UserService } from "../../services/user.js";
 

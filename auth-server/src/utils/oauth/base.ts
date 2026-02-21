@@ -1,7 +1,7 @@
 import crypto from "node:crypto";
 import { Cache } from "@mern/cache";
 import { CacheKeys } from "../../cache/keys.js";
-import { env } from "../../config/env.js";
+import { env } from "@mern/env";
 import type { OAuthProvider, OAuthUserProfile } from "../../types/index.js";
 import { AppError } from "@mern/server";
 
@@ -118,7 +118,7 @@ export abstract class BaseOAuthProvider {
    * Points to the backend callback endpoint for this provider.
    */
   getCallbackUrl(): string {
-    const backendUrl = env.SERVER_URL;
+    const backendUrl = env.AUTH_SERVER_URL!;
     return `${backendUrl}/api/auth/callback/${this.providerName}`;
   }
 

@@ -1,6 +1,6 @@
 import type { CorsOptions } from "@mern/server";
 
-import { env } from "./env.js";
+import { env } from "@mern/env";
 
 export const corsOptions: CorsOptions = {
   origin: env.FRONTEND_URL,

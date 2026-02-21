@@ -13,10 +13,10 @@
   "dependencies": {
     "@mern/core": "workspace:^",
     "@mern/database": "workspace:^",
+    "@mern/env": "workspace:^",
     "@mern/logger": "workspace:^",
     "@mern/queue": "workspace:^",
     "@react-email/components": "^0.0.36",
-    "@t3-oss/env-core": "^0.13.10",
     "drizzle-orm": "^0.45.1",
     "ioredis": "^5.9.3",
     "postgres": "^3.4.8",

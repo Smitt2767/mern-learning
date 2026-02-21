@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 import type { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import { env } from "../config/env.js";
+import { env } from "@mern/env";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -28,14 +28,14 @@ function cookieOptions() {
 function signToken(username: string): string {
   return jwt.sign(
     { sub: username } satisfies DashboardTokenPayload,
-    env.DASHBOARD_JWT_SECRET,
+    env.DASHBOARD_JWT_SECRET!,
     { expiresIn: env.DASHBOARD_JWT_EXPIRY_SECONDS },
   );
 }
 
 function verifyToken(token: string): DashboardTokenPayload | null {
   try {
-    const payload = jwt.verify(token, env.DASHBOARD_JWT_SECRET);
+    const payload = jwt.verify(token, env.DASHBOARD_JWT_SECRET!);
     if (typeof payload === "object" && typeof payload.sub === "string") {
       return { sub: payload.sub };
     }
@@ -134,7 +134,7 @@ export async function postLogin(req: Request, res: Response): Promise<void> {
   // Always run bcrypt.compare to prevent timing attacks, even on username mismatch.
   const passwordMatch = await bcrypt.compare(
     password,
-    env.DASHBOARD_PASSWORD_HASH,
+    env.DASHBOARD_PASSWORD_HASH!,
   );
 
   if (!usernameMatch || !passwordMatch) {

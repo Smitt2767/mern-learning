@@ -6,7 +6,7 @@ import { QueueManager } from "@mern/queue";
 import cookieParser from "cookie-parser";
 import express from "express";
 import type { Server } from "node:http";
-import { env } from "../config/env.js";
+import { env } from "@mern/env";
 import {
   getLoginPage,
   postLogin,
