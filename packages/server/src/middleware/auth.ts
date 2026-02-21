@@ -1,4 +1,10 @@
-import { USER_STATUS, type UserRole } from "@mern/core";
+import {
+  ACTION_LEVEL,
+  SYSTEM_ROLE,
+  USER_STATUS,
+  type PermissionAction,
+  type PermissionKey,
+} from "@mern/core";
 import type { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 
@@ -82,11 +88,25 @@ export function createAuthMiddleware(callbacks: AuthCallbacks) {
   return authenticate;
 }
 
-export function authorize(...roles: UserRole[]) {
+export function authorize(permissionKey: PermissionKey, minAction: PermissionAction) {
   return (req: Request, _res: Response, next: NextFunction): void => {
-    if (!req.user || !roles.includes(req.user.role)) {
-      throw AppError.forbidden("Access denied");
+    const role = req.user?.role;
+
+    if (!role) {
+      throw AppError.forbidden("No role assigned");
     }
+
+    // Super admin bypasses all permission checks
+    if (role.name === SYSTEM_ROLE.SUPER_ADMIN) {
+      return next();
+    }
+
+    const userAction: PermissionAction = role.permissions[permissionKey] ?? "none";
+
+    if (ACTION_LEVEL[userAction] < ACTION_LEVEL[minAction]) {
+      throw AppError.forbidden("Insufficient permissions");
+    }
+
     next();
   };
 }
