@@ -11,6 +11,7 @@ import { createdAt, id, updatedAt } from "../helpers.js";
 import { accounts } from "./accounts.js";
 import { emailVerifications } from "./email-verifications.js";
 import { userStatusEnum } from "./enums.js";
+import { organizationMembers } from "./organization-members.js";
 import { passwordResetTokens } from "./password-reset-tokens.js";
 import { roles } from "./roles.js";
 import { sessions } from "./sessions.js";
@@ -25,6 +26,7 @@ export const users = pgTable(
     password: text(),
     profileImage: text(),
     // roleId is nullable — null means no role assigned (e.g. role was deleted).
+    // Points to a global-scoped role (scope = "global").
     // Assigned at signup and changeable via admin-server API.
     roleId: uuid("role_id").references(() => roles.id, {
       onDelete: "set null",
@@ -52,6 +54,7 @@ export const usersRelations = relations(users, ({ one, many }) => ({
   sessions: many(sessions),
   emailVerifications: many(emailVerifications),
   passwordResetTokens: many(passwordResetTokens),
+  organizationMembers: many(organizationMembers),
 }));
 
 export type User = typeof users.$inferSelect;

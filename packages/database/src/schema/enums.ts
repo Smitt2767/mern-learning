@@ -1,8 +1,11 @@
 import {
   ACCOUNT_PROVIDERS,
+  INVITATION_STATUSES,
   JOB_NAMES,
   JOB_STATUSES,
   PERMISSION_ACTIONS,
+  PERMISSION_SCOPES,
+  ROLE_SCOPES,
   USER_STATUSES,
 } from "@mern/core";
 import { pgEnum } from "drizzle-orm/pg-core";
@@ -20,4 +23,21 @@ export const jobStatusEnum = pgEnum("job_status", JOB_STATUSES);
 export const permissionActionEnum = pgEnum(
   "permission_action",
   PERMISSION_ACTIONS,
+);
+
+// global = platform-level permission, checked by authorize()
+// organization = org-scoped permission, checked by authorizeOrg()
+export const permissionScopeEnum = pgEnum(
+  "permission_scope",
+  PERMISSION_SCOPES,
+);
+
+// global = platform role (super_admin, admin, user), organizationId = null
+// organization = org-scoped role, organizationId = <org uuid>
+export const roleScopeEnum = pgEnum("role_scope", ROLE_SCOPES);
+
+// ─── Organizations ────────────────────────────────────────────────────────────
+export const invitationStatusEnum = pgEnum(
+  "invitation_status",
+  INVITATION_STATUSES,
 );

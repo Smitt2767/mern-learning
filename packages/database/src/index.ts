@@ -49,5 +49,7 @@ export class Database {
 }
 
 export * from "./schema/index.js";
-export * from "./types/index.js";
+export { seedOrgRoles } from "./seeds/org-roles.js";
+export type { SeededOrgRoles } from "./seeds/org-roles.js";
 export { seedRbac } from "./seeds/rbac.js";
+export * from "./types/index.js";

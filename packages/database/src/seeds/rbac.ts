@@ -1,6 +1,8 @@
 import { Logger } from "@mern/logger";
 
 import type { PermissionKey } from "@mern/core";
+import { PERMISSION_SCOPE, PERMISSION_SCOPE_MAP } from "@mern/core";
+import { isNull, sql } from "drizzle-orm";
 import { permissions, rolePermissions, roles } from "../schema/index.js";
 import type { DbInstance } from "../types/index.js";
 import {
@@ -14,8 +16,16 @@ import {
 // Add a description here when you add a new PERMISSION_KEY to @mern/core.
 
 const PERMISSION_DESCRIPTIONS: Record<string, string> = {
+  // Global
   USER_MANAGEMENT:
     "Manage platform users — view profiles, update status, assign roles, delete accounts",
+  // Organization-scoped
+  ORG_MANAGEMENT:
+    "Manage organization settings — update details, delete org, transfer ownership",
+  MEMBER_MANAGEMENT:
+    "Manage organization members — view, add, remove, and update member roles",
+  INVITATION_MANAGEMENT:
+    "Manage organization invitations — send, list, and cancel invites",
 };
 
 // ─── System role descriptions ─────────────────────────────────────────────────
@@ -39,15 +49,19 @@ const SYSTEM_ROLE_DESCRIPTIONS: Record<string, string> = {
  *     All permissions, system roles, and role_permissions are created.
  *
  *   Scenario 2 — New permission added to PERMISSION_KEY in @mern/core
- *     New permission row is inserted. System roles receive the action from
- *     SYSTEM_ROLE_PERMISSIONS manifest. Custom roles receive "none" (safe default).
+ *     New permission row is inserted. Global system roles receive the action
+ *     from SYSTEM_ROLE_PERMISSIONS manifest. Custom global roles receive "none".
+ *     Org roles are NOT touched — seedOrgRoles() handles org permission assignment.
  *
  *   Scenario 3 — New system role added to SYSTEM_ROLE in @mern/core
- *     New role row is inserted. All existing permissions are assigned from manifest.
+ *     New role row is inserted. All global permissions assigned from manifest.
  *
  *   Scenario 4 — System role manifest action changed in @mern/core
  *     ON CONFLICT DO UPDATE overwrites the action for system roles only.
  *     Custom role permission assignments are NEVER touched by this seed.
+ *
+ * Note: This seed only operates on global-scoped roles (organizationId IS NULL).
+ * Org-scoped roles are created per-org via seedOrgRoles() at org creation time.
  *
  * @param db - Drizzle DB instance (or transaction)
  */
@@ -56,60 +70,66 @@ export async function seedRbac(db: DbInstance): Promise<void> {
 
   await db.transaction(async (tx) => {
     // ── Step 1: Upsert all permissions ────────────────────────────────────────
-    // New permissions are inserted. Existing ones are skipped (DO NOTHING).
-    // Description is not updated on conflict — set once at creation.
+    // New permissions are inserted with their correct scope.
+    // Existing ones update their scope in case it changed in @mern/core.
 
     const permissionValues = PERMISSION_KEYS.map((key) => ({
       key,
       description: PERMISSION_DESCRIPTIONS[key] ?? key,
+      scope: PERMISSION_SCOPE_MAP[key],
     }));
 
     await tx
       .insert(permissions)
       .values(permissionValues)
-      .onConflictDoNothing({ target: permissions.key });
+      .onConflictDoUpdate({
+        target: permissions.key,
+        // Update scope if it changed — description is set once at creation.
+        set: { scope: sql`excluded.scope` },
+      });
 
     Logger.info(`[seed] Permissions upserted (${permissionValues.length})`);
 
-    // ── Step 2: Upsert system roles ───────────────────────────────────────────
-    // New system roles are inserted. Existing ones are skipped (DO NOTHING).
-    // isSystem = true is intentionally not updated on conflict — if someone
-    // manually set it to false, we don't silently re-elevate it here.
+    // ── Step 2: Upsert global system roles ────────────────────────────────────
+    // Only operates on global roles (organizationId IS NULL, scope = "global").
+    // isSystem = true is intentionally not updated on conflict.
 
     const roleValues = SYSTEM_ROLES.map((name) => ({
       name,
       description: SYSTEM_ROLE_DESCRIPTIONS[name] ?? name,
       isSystem: true,
+      scope: PERMISSION_SCOPE.GLOBAL,
+      organizationId: null,
     }));
 
-    await tx
-      .insert(roles)
-      .values(roleValues)
-      .onConflictDoNothing({ target: roles.name });
+    // onConflictDoNothing uses the partial unique index uq_roles_name_global
+    // which only applies WHERE organization_id IS NULL.
+    await tx.insert(roles).values(roleValues).onConflictDoNothing();
 
-    Logger.info(`[seed] System roles upserted (${roleValues.length})`);
+    Logger.info(`[seed] Global system roles upserted (${roleValues.length})`);
 
-    // ── Step 3: Fetch current state from DB ───────────────────────────────────
+    // ── Step 3: Fetch current global state from DB ────────────────────────────
     // We need actual UUIDs to build role_permissions rows.
+    // Only fetch global roles — org roles are managed by seedOrgRoles().
 
     const allPermissions = await tx.select().from(permissions);
-    const allRoles = await tx.select().from(roles);
+    const globalRoles = await tx
+      .select()
+      .from(roles)
+      .where(isNull(roles.organizationId));
 
-    // ── Step 4: Upsert role_permissions ───────────────────────────────────────
+    // ── Step 4: Upsert role_permissions for global roles ──────────────────────
     //
     // System roles (isSystem = true):
     //   ON CONFLICT DO UPDATE → always reflects the manifest.
-    //   This is how manifest changes propagate on deploy.
     //
-    // Custom roles (isSystem = false):
+    // Custom global roles (isSystem = false):
     //   ON CONFLICT DO NOTHING → admin-managed assignments are never touched.
     //   New permissions get action = "none" as a safe default.
 
-    for (const role of allRoles) {
+    for (const role of globalRoles) {
       for (const permission of allPermissions) {
         if (role.isSystem) {
-          // Resolve action from manifest. Falls back to "none" if somehow
-          // missing (e.g. a permission was added but manifest wasn't updated).
           const systemRoleName =
             role.name as keyof typeof SYSTEM_ROLE_PERMISSIONS;
           const action =
@@ -129,8 +149,6 @@ export async function seedRbac(db: DbInstance): Promise<void> {
               set: { action },
             });
         } else {
-          // Custom role — insert with "none" only if the row doesn't exist yet.
-          // Never overwrite what an admin has configured.
           await tx
             .insert(rolePermissions)
             .values({
@@ -147,7 +165,7 @@ export async function seedRbac(db: DbInstance): Promise<void> {
 
     Logger.info(
       `[seed] Role permissions upserted ` +
-        `(${allRoles.length} roles × ${allPermissions.length} permissions)`,
+        `(${globalRoles.length} global roles × ${allPermissions.length} permissions)`,
     );
   });
 
