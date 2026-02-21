@@ -37,7 +37,7 @@ export class Mailer {
     token: string
     expiresAt: string
   }) {
-    const verificationUrl = `${env.FRONTEND_URL}/verify-email?token=${data.token}`
+    const verificationUrl = `${env.AUTH_SERVER_URL}/api/auth/verify-email?token=${data.token}`
     return this.resend.emails.send({
       from: this.from,
       to: data.email,

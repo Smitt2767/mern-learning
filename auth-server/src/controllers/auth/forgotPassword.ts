@@ -29,12 +29,16 @@ export async function forgotPassword(
     return PasswordResetService.createToken(user.id, tx);
   });
 
-  void QueueManager.add(JOB_NAME.SEND_PASSWORD_RESET_EMAIL, {
-    userId: user.id,
-    email,
-    token,
-    expiresAt: expiresAt.toISOString(),
-  });
+  void QueueManager.add(
+    JOB_NAME.SEND_PASSWORD_RESET_EMAIL,
+    {
+      userId: user.id,
+      email,
+      token,
+      expiresAt: expiresAt.toISOString(),
+    },
+    { priority: 1 },
+  );
 
   res.status(200).json({
     success: true,

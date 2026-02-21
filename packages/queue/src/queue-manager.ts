@@ -8,6 +8,7 @@ import {
   QUEUE_NAMES,
   type QueueName,
 } from "./constants/index.js";
+import { JobRecordService } from "./services/job-record.js";
 import type { AddJobOptions } from "./types/index.js";
 
 /**
@@ -93,6 +94,17 @@ export class QueueManager {
   ): Promise<Job<JobDataMap[N], JobResultMap[N]>> {
     const queue = QueueManager.forJob(jobName);
     const job = await queue.add(jobName, data, options);
+
+    await JobRecordService.create({
+      bullJobId: job.id!,
+      queueName: JOB_QUEUE_MAP[jobName],
+      jobName,
+      data,
+      ...(options?.attempts !== undefined
+        ? { maxAttempts: options.attempts }
+        : {}),
+    });
+
     Logger.debug(
       `Job "${jobName}" added to queue "${JOB_QUEUE_MAP[jobName]}" (id: ${job.id}).`,
     );

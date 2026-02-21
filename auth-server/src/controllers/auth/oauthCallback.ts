@@ -98,12 +98,14 @@ export async function oauthCallback(
       }
 
       // Brand new user — create user + linked OAuth account
+      // emailVerifiedAt is set immediately since the OAuth provider already verified the email
       const newUser = await UserService.create(
         {
           firstName: profile.firstName,
           lastName: profile.lastName,
           email: profile.email,
           profileImage: profile.profileImage,
+          emailVerifiedAt: new Date(),
         },
         tx,
       );
@@ -145,11 +147,15 @@ export async function oauthCallback(
 
     // ── 9. Enqueue welcome email for brand-new users ───────────────────────
     if (isNewUser) {
-      void QueueManager.add(JOB_NAME.SEND_WELCOME_EMAIL, {
-        userId: user.id,
-        email: user.email,
-        firstName: user.firstName,
-      });
+      void QueueManager.add(
+        JOB_NAME.SEND_WELCOME_EMAIL,
+        {
+          userId: user.id,
+          email: user.email,
+          firstName: user.firstName,
+        },
+        { priority: 10 },
+      );
     }
 
     // ── 10. Redirect to frontend ───────────────────────────────────────────

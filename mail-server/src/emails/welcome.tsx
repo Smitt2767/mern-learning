@@ -8,15 +8,14 @@ import {
   Preview,
   Section,
   Text,
-} from "@react-email/components"
-import * as React from "react"
+} from "@react-email/components";
 
-import { EmailButton } from "./components/email-button.js"
-import { EmailFooter } from "./components/email-footer.js"
-import { EmailHeader } from "./components/email-header.js"
+import { EmailButton } from "./components/email-button.js";
+import { EmailFooter } from "./components/email-footer.js";
+import { EmailHeader } from "./components/email-header.js";
 
 export interface WelcomeEmailProps {
-  firstName?: string
+  firstName?: string;
 }
 
 export function WelcomeEmail({ firstName = "there" }: WelcomeEmailProps) {
@@ -80,10 +79,10 @@ export function WelcomeEmail({ firstName = "there" }: WelcomeEmailProps) {
         </Container>
       </Body>
     </Html>
-  )
+  );
 }
 
-export default WelcomeEmail
+export default WelcomeEmail;
 
 const styles = {
   body: {
@@ -91,7 +90,6 @@ const styles = {
     fontFamily:
       '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
     margin: "0",
-    padding: "40px 0",
   },
   container: {
     backgroundColor: "#ffffff",
@@ -148,4 +146,4 @@ const styles = {
     lineHeight: "1.6",
     margin: "0",
   },
-}
+};

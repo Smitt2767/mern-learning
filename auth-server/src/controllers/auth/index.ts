@@ -7,6 +7,7 @@ import { oauthRedirect } from "./oauthRedirect.js";
 import { refresh } from "./refresh.js";
 import { resetPassword } from "./resetPassword.js";
 import { signUp } from "./signup.js";
+import { verifyEmail } from "./verifyEmail.js";
 
 export class AuthController {
   static signUp = signUp;
@@ -18,4 +19,5 @@ export class AuthController {
   static resetPassword = resetPassword;
   static changePassword = changePassword;
   static refresh = refresh;
+  static verifyEmail = verifyEmail;
 }

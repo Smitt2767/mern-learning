@@ -1,7 +1,7 @@
 import { BaseServer } from "@mern/server";
 
 import { Cache } from "@mern/cache";
-import { QueueManager } from "@mern/queue";
+import { JobRecordService, QueueManager } from "@mern/queue";
 import { cookieOptions } from "./config/cookies.js";
 import { corsOptions } from "./config/cors.js";
 import { database } from "./config/db.js";
@@ -24,6 +24,7 @@ class AuthServer extends BaseServer {
     await database.connect();
     Cache.init(redis);
     QueueManager.init(redisConnectionOptions);
+    JobRecordService.init(database.db);
   }
 
   protected registerRoutes(): void {

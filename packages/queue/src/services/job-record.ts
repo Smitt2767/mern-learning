@@ -50,7 +50,13 @@ export class JobRecordService {
       scheduledFor?: Date;
     },
     tx?: DbInstance,
-  ): Promise<JobRecord> {
+  ): Promise<JobRecord | null> {
+    if (!_db && !tx) {
+      Logger.warn(
+        `JobRecordService.create: not initialised — skipping record for job "${params.jobName}".`,
+      );
+      return null;
+    }
     const db = JobRecordService.getDb(tx);
 
     const record: NewJobRecord = {
@@ -95,6 +101,7 @@ export class JobRecordService {
       {
         status: JOB_STATUS.COMPLETED,
         result: result as JobResultMap[keyof JobResultMap],
+        progress: 100,
         completedAt: new Date(),
       },
       tx,
@@ -115,11 +122,30 @@ export class JobRecordService {
         status: JOB_STATUS.FAILED,
         attempts,
         error,
+        progress: 100,
         ...(errorStack ? { errorStack } : {}),
         failedAt: new Date(),
       },
       tx,
     );
+  }
+
+  /**
+   * Update the progress percentage for a running job (0–100).
+   *
+   * Call this from inside a job processor to report intermediate progress
+   * for long-running tasks. The value is clamped to [0, 100].
+   *
+   * @example
+   * await JobRecordService.updateProgress(job.id!, 50); // halfway done
+   */
+  static async updateProgress(
+    bullJobId: string,
+    progress: number,
+    tx?: DbInstance,
+  ): Promise<void> {
+    const clamped = Math.min(100, Math.max(0, Math.round(progress)));
+    await JobRecordService.updateByBullId(bullJobId, { progress: clamped }, tx);
   }
 
   // ─── Read operations (admin / monitoring) ─────────────────────────────────

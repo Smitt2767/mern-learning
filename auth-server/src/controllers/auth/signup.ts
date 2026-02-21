@@ -1,13 +1,11 @@
 import { ACCOUNT_PROVIDER, JOB_NAME, signupSchema } from "@mern/core";
 import { QueueManager } from "@mern/queue";
 import type { Request, Response } from "express";
-import crypto from "node:crypto";
 
-import { AppError, Cookie, Jwt, Password } from "@mern/server";
-import { appConfig } from "../../config/app.js";
+import { AppError, Password } from "@mern/server";
 import { db } from "../../config/db.js";
 import { AccountService } from "../../services/account.js";
-import { SessionService } from "../../services/session.js";
+import { EmailVerificationService } from "../../services/email-verification.js";
 import { UserService } from "../../services/user.js";
 
 export async function signUp(req: Request, res: Response): Promise<void> {
@@ -19,76 +17,52 @@ export async function signUp(req: Request, res: Response): Promise<void> {
   }
 
   const hashedPassword = await Password.hash(input.password);
-  const sessionId = crypto.randomUUID();
 
   try {
-    const { sanitizedUser, accessToken, refreshToken } = await db.transaction(
-      async (tx) => {
-        const user = await UserService.create(
-          {
-            firstName: input.firstName,
-            lastName: input.lastName,
-            email: input.email,
-            password: hashedPassword,
-          },
-          tx,
-        );
+    const { user, token, expiresAt } = await db.transaction(async (tx) => {
+      const user = await UserService.create(
+        {
+          firstName: input.firstName,
+          lastName: input.lastName,
+          email: input.email,
+          password: hashedPassword,
+        },
+        tx,
+      );
 
-        await AccountService.create(
-          {
-            userId: user.id,
-            provider: ACCOUNT_PROVIDER.CREDENTIALS,
-            providerAccountId: user.id,
-          },
-          tx,
-        );
-
-        const accessToken = Jwt.signAccessToken({
+      await AccountService.create(
+        {
           userId: user.id,
-          sessionId,
-        });
+          provider: ACCOUNT_PROVIDER.CREDENTIALS,
+          providerAccountId: user.id,
+        },
+        tx,
+      );
 
-        const refreshToken = Jwt.signRefreshToken({
-          userId: user.id,
-          sessionId,
-        });
+      const { token, expiresAt } =
+        await EmailVerificationService.createToken(user.id, tx);
 
-        await SessionService.create(
-          {
-            id: sessionId,
-            userId: user.id,
-            refreshToken,
-            userAgent: req.headers["user-agent"] ?? null,
-            ipAddress: req.ip ?? null,
-            expiresAt: Jwt.getRefreshTokenExpiresAt(),
-          },
-          tx,
-        );
+      return { user, token, expiresAt };
+    });
 
-        Cookie.set(res, "access_token", accessToken, {
-          maxAge: appConfig.auth.accessToken.maxAge,
-        });
-
-        Cookie.set(res, "refresh_token", refreshToken, {
-          maxAge: appConfig.auth.refreshToken.maxAge,
-        });
-
-        const { password: _, ...sanitizedUser } = user;
-
-        return { sanitizedUser, accessToken, refreshToken };
+    void QueueManager.add(
+      JOB_NAME.SEND_EMAIL_VERIFICATION,
+      {
+        userId: user.id,
+        email: user.email,
+        token,
+        expiresAt: expiresAt.toISOString(),
       },
+      { priority: 1 },
     );
 
-    void QueueManager.add(JOB_NAME.SEND_WELCOME_EMAIL, {
-      userId: sanitizedUser.id,
-      email: sanitizedUser.email,
-      firstName: sanitizedUser.firstName,
-    });
+    const { password: _, ...sanitizedUser } = user;
 
     res.status(201).json({
       success: true,
-      message: "Account created successfully",
-      data: { user: sanitizedUser, accessToken, refreshToken },
+      message:
+        "Account created. Please check your email to verify your account.",
+      data: { user: sanitizedUser },
     });
   } catch (error: unknown) {
     if (

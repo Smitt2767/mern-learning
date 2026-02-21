@@ -8,17 +8,16 @@ import {
   Preview,
   Section,
   Text,
-} from "@react-email/components"
-import * as React from "react"
+} from "@react-email/components";
 
-import { EmailButton } from "./components/email-button.js"
-import { EmailFooter } from "./components/email-footer.js"
-import { EmailHeader } from "./components/email-header.js"
+import { EmailButton } from "./components/email-button.js";
+import { EmailFooter } from "./components/email-footer.js";
+import { EmailHeader } from "./components/email-header.js";
 
 export interface ResetPasswordProps {
-  email?: string
-  resetUrl?: string
-  expiresAt?: string
+  email?: string;
+  resetUrl?: string;
+  expiresAt?: string;
 }
 
 export function ResetPasswordEmail({
@@ -29,7 +28,7 @@ export function ResetPasswordEmail({
   const expiryDate = new Date(expiresAt).toLocaleString("en-US", {
     dateStyle: "medium",
     timeStyle: "short",
-  })
+  });
 
   return (
     <Html lang="en">
@@ -80,10 +79,10 @@ export function ResetPasswordEmail({
         </Container>
       </Body>
     </Html>
-  )
+  );
 }
 
-export default ResetPasswordEmail
+export default ResetPasswordEmail;
 
 const styles = {
   body: {
@@ -91,7 +90,6 @@ const styles = {
     fontFamily:
       '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
     margin: "0",
-    padding: "40px 0",
   },
   container: {
     backgroundColor: "#ffffff",
@@ -160,4 +158,4 @@ const styles = {
     lineHeight: "1.6",
     margin: "0",
   },
-}
+};

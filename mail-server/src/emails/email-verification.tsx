@@ -8,17 +8,16 @@ import {
   Preview,
   Section,
   Text,
-} from "@react-email/components"
-import * as React from "react"
+} from "@react-email/components";
 
-import { EmailButton } from "./components/email-button.js"
-import { EmailFooter } from "./components/email-footer.js"
-import { EmailHeader } from "./components/email-header.js"
+import { EmailButton } from "./components/email-button.js";
+import { EmailFooter } from "./components/email-footer.js";
+import { EmailHeader } from "./components/email-header.js";
 
 export interface EmailVerificationProps {
-  email?: string
-  verificationUrl?: string
-  expiresAt?: string
+  email?: string;
+  verificationUrl?: string;
+  expiresAt?: string;
 }
 
 export function EmailVerificationEmail({
@@ -29,12 +28,14 @@ export function EmailVerificationEmail({
   const expiryDate = new Date(expiresAt).toLocaleString("en-US", {
     dateStyle: "medium",
     timeStyle: "short",
-  })
+  });
 
   return (
     <Html lang="en">
       <Head />
-      <Preview>Verify your email address to activate your MERN account.</Preview>
+      <Preview>
+        Verify your email address to activate your MERN account.
+      </Preview>
       <Body style={styles.body}>
         <Container style={styles.container}>
           <EmailHeader />
@@ -78,10 +79,10 @@ export function EmailVerificationEmail({
         </Container>
       </Body>
     </Html>
-  )
+  );
 }
 
-export default EmailVerificationEmail
+export default EmailVerificationEmail;
 
 const styles = {
   body: {
@@ -89,7 +90,6 @@ const styles = {
     fontFamily:
       '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
     margin: "0",
-    padding: "40px 0",
   },
   container: {
     backgroundColor: "#ffffff",
@@ -157,4 +157,4 @@ const styles = {
     lineHeight: "1.6",
     margin: "0",
   },
-}
+};

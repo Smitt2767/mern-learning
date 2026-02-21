@@ -30,6 +30,12 @@ export async function login(req: Request, res: Response): Promise<void> {
     throw AppError.unauthorized("Invalid email or password");
   }
 
+  if (!user.emailVerifiedAt) {
+    throw AppError.forbidden(
+      "Please verify your email address before logging in",
+    );
+  }
+
   if (user.status === USER_STATUS.SUSPENDED) {
     throw AppError.forbidden("Your account has been suspended");
   }

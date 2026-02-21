@@ -45,5 +45,9 @@ router
   );
 
 router
+  .route("/verify-email")
+  .get(rateLimit({ windowMin: 15, limit: 10 }), AuthController.verifyEmail);
+
+router
   .route("/refresh")
   .post(rateLimit({ windowMin: 15, limit: 20 }), AuthController.refresh);

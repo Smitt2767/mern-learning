@@ -30,6 +30,13 @@ export const jobRecords = pgTable(
     attempts: integer().notNull().default(0),
     /** Max attempts configured at enqueue time. */
     maxAttempts: integer().notNull().default(3),
+    /**
+     * Completion percentage (0–100).
+     * Set to 0 on enqueue, 100 on completion or failure.
+     * For long-running jobs, call JobRecordService.updateProgress() with
+     * intermediate values (e.g. 25, 50, 75) as work progresses.
+     */
+    progress: integer().notNull().default(0),
 
     // ── Payload & result ──────────────────────────────────────────────────
     /** Typed JSON payload — shape depends on jobName. */

@@ -71,4 +71,12 @@ export class UserService {
   ) {
     await tx.update(users).set({ profileImage }).where(eq(users.id, id));
   }
+
+  @CacheInvalidate({ tags: [CacheTags.users.byId] })
+  static async markEmailVerified(id: string, tx: DbInstance = db) {
+    await tx
+      .update(users)
+      .set({ emailVerifiedAt: new Date() })
+      .where(eq(users.id, id));
+  }
 }
