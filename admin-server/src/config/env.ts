@@ -23,7 +23,10 @@ export const env = createEnv({
     JWT_ACCESS_TOKEN_EXPIRY_SECONDS: z.coerce.number().default(10080),
     JWT_REFRESH_TOKEN_EXPIRY_SECONDS: z.coerce.number().default(43200),
 
-    EXECUTE_BOOT_SCRIPTS: z.coerce.boolean().default(false),
+    EXECUTE_BOOT_SCRIPTS: z
+      .enum(["true", "false"])
+      .default("false")
+      .transform((v) => v === "true"),
   },
   runtimeEnv: process.env,
   emptyStringAsUndefined: true,

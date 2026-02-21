@@ -33,7 +33,10 @@ export const env = createEnv({
     GOOGLE_CLIENT_ID: z.string(),
     GOOGLE_CLIENT_SECRET: z.string(),
 
-    EXECUTE_BOOT_SCRIPTS: z.coerce.boolean().default(false),
+    EXECUTE_BOOT_SCRIPTS: z
+      .enum(["true", "false"])
+      .default("false")
+      .transform((v) => v === "true"),
   },
   runtimeEnv: process.env,
   emptyStringAsUndefined: true,
