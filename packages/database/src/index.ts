@@ -50,3 +50,4 @@ export class Database {
 
 export * from "./schema/index.js";
 export * from "./types/index.js";
+export { seedRbac } from "./seeds/rbac.js";

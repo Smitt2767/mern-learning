@@ -5,6 +5,9 @@ export const CacheTags = {
     all: () => generateCacheTag("users"),
     byId: (userId: string) => generateCacheTag("users", userId),
   },
+  roles: {
+    byId: (roleId: string) => generateCacheTag("roles", roleId),
+  },
   sessions: {
     all: () => generateCacheTag("sessions"),
     byId: (sessionId: string) => generateCacheTag("sessions", sessionId),

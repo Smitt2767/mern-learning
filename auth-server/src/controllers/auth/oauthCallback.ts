@@ -13,6 +13,7 @@ import { appConfig } from "../../config/app.js";
 import { db } from "../../config/db.js";
 import { env } from "../../config/env.js";
 import { AccountService } from "../../services/account.js";
+import { RoleService } from "../../services/role.js";
 import { SessionService } from "../../services/session.js";
 import { UserService } from "../../services/user.js";
 import { getOAuthProvider } from "../../utils/oauth/index.js";
@@ -50,6 +51,8 @@ export async function oauthCallback(
       provider.providerName === "google"
         ? ACCOUNT_PROVIDER.GOOGLE
         : ACCOUNT_PROVIDER.GITHUB;
+
+    const defaultRoleId = await RoleService.findDefaultUserRoleId();
 
     // ── 6. Find or create user (wrapped in transaction) ────────────────────
     const { user, isNewUser } = await db.transaction(async (tx) => {
@@ -106,6 +109,7 @@ export async function oauthCallback(
           email: profile.email,
           profileImage: profile.profileImage,
           emailVerifiedAt: new Date(),
+          roleId: defaultRoleId,
         },
         tx,
       );

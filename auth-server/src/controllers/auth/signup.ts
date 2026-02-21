@@ -6,6 +6,7 @@ import { AppError, Password } from "@mern/server";
 import { db } from "../../config/db.js";
 import { AccountService } from "../../services/account.js";
 import { EmailVerificationService } from "../../services/email-verification.js";
+import { RoleService } from "../../services/role.js";
 import { UserService } from "../../services/user.js";
 
 export async function signUp(req: Request, res: Response): Promise<void> {
@@ -17,6 +18,7 @@ export async function signUp(req: Request, res: Response): Promise<void> {
   }
 
   const hashedPassword = await Password.hash(input.password);
+  const defaultRoleId = await RoleService.findDefaultUserRoleId();
 
   try {
     const { user, token, expiresAt } = await db.transaction(async (tx) => {
@@ -26,6 +28,7 @@ export async function signUp(req: Request, res: Response): Promise<void> {
           lastName: input.lastName,
           email: input.email,
           password: hashedPassword,
+          roleId: defaultRoleId,
         },
         tx,
       );

@@ -1,14 +1,25 @@
 export const CACHE_TIMES = {
+  thirtySeconds: 30,
   oneMinute: 60,
+  twoMinutes: 60 * 2,
   fiveMinutes: 60 * 5,
+  tenMinutes: 60 * 10,
   fifteenMinutes: 60 * 15,
+  thirtyMinutes: 60 * 30,
   oneHour: 60 * 60,
+  twoHours: 60 * 60 * 2,
+  threeHours: 60 * 60 * 3,
   sixHours: 60 * 60 * 6,
   twelveHours: 60 * 60 * 12,
   oneDay: 60 * 60 * 24,
+  twoDays: 60 * 60 * 24 * 2,
+  threeDays: 60 * 60 * 24 * 3,
   oneWeek: 60 * 60 * 24 * 7,
   twoWeeks: 60 * 60 * 24 * 14,
   oneMonth: 60 * 60 * 24 * 30,
+  threeMonths: 60 * 60 * 24 * 90,
+  sixMonths: 60 * 60 * 24 * 180,
+  oneYear: 60 * 60 * 24 * 365,
 } as const;
 
 export type CacheTime = keyof typeof CACHE_TIMES;

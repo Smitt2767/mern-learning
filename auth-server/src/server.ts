@@ -1,6 +1,7 @@
 import { BaseServer } from "@mern/server";
 
 import { Cache } from "@mern/cache";
+import { seedRbac } from "@mern/database";
 import { JobRecordService, QueueManager } from "@mern/queue";
 import { cookieOptions } from "./config/cookies.js";
 import { corsOptions } from "./config/cors.js";
@@ -22,6 +23,7 @@ class AuthServer extends BaseServer {
 
   protected async configure(): Promise<void> {
     await database.connect();
+    await seedRbac(database.db);
     Cache.init(redis);
     QueueManager.init(redisConnectionOptions);
     JobRecordService.init(database.db);
