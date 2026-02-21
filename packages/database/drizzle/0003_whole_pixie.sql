@@ -1,1 +1,0 @@
-ALTER TABLE "job_records" ADD COLUMN "progress" integer DEFAULT 0 NOT NULL;
