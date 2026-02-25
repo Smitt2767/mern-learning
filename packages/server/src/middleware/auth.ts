@@ -1,5 +1,7 @@
 import {
   ACTION_LEVEL,
+  PERMISSION_SCOPE,
+  PERMISSION_SCOPE_MAP,
   SYSTEM_ROLE,
   USER_STATUS,
   type PermissionAction,
@@ -88,7 +90,32 @@ export function createAuthMiddleware(callbacks: AuthCallbacks) {
   return authenticate;
 }
 
-export function authorize(permissionKey: PermissionKey, minAction: PermissionAction) {
+/**
+ * authorize
+ *
+ * Checks the calling user's GLOBAL role has at least `minAction` on `permissionKey`.
+ *
+ * Guards:
+ *   - Only accepts global-scoped permission keys. Passing an org-scoped key
+ *     (ORG_MANAGEMENT, MEMBER_MANAGEMENT, INVITATION_MANAGEMENT) throws immediately
+ *     to prevent accidental misuse — use authorizeOrg() for those.
+ *   - super_admin bypasses all permission checks.
+ *
+ * Must be used after authenticate().
+ */
+export function authorize(
+  permissionKey: PermissionKey,
+  minAction: PermissionAction,
+) {
+  // Fail fast at route registration time if a dev accidentally passes an
+  // org-scoped permission key to the global authorize() middleware.
+  if (PERMISSION_SCOPE_MAP[permissionKey] !== PERMISSION_SCOPE.GLOBAL) {
+    throw new Error(
+      `authorize() called with org-scoped permission "${permissionKey}". ` +
+        `Use authorizeOrg() for organization-scoped permissions.`,
+    );
+  }
+
   return (req: Request, _res: Response, next: NextFunction): void => {
     const role = req.user?.role;
 
@@ -96,12 +123,13 @@ export function authorize(permissionKey: PermissionKey, minAction: PermissionAct
       throw AppError.forbidden("No role assigned");
     }
 
-    // Super admin bypasses all permission checks
+    // super_admin bypasses all permission checks
     if (role.name === SYSTEM_ROLE.SUPER_ADMIN) {
       return next();
     }
 
-    const userAction: PermissionAction = role.permissions[permissionKey] ?? "none";
+    const userAction: PermissionAction =
+      role.permissions[permissionKey] ?? "none";
 
     if (ACTION_LEVEL[userAction] < ACTION_LEVEL[minAction]) {
       throw AppError.forbidden("Insufficient permissions");

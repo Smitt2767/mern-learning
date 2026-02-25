@@ -12,6 +12,10 @@ export {
 export { Password } from "./utils/password.js";
 
 export { authorize, createAuthMiddleware } from "./middleware/auth.js";
+export {
+  createAuthorizeOrg,
+  type AuthorizeOrgCallbacks,
+} from "./middleware/authorize-org.js";
 export { createErrorHandler } from "./middleware/error-handler.js";
 export {
   createRateLimiter,

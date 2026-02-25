@@ -23,9 +23,17 @@ export const QUEUE_NAMES = Object.values(QUEUE_NAME) as [
 import { JOB_NAME, type JobName } from "@mern/core";
 
 export const JOB_QUEUE_MAP: Record<JobName, QueueName> = {
+  // ── Auth / User emails ──────────────────────────────────────────────────
   [JOB_NAME.SEND_WELCOME_EMAIL]: QUEUE_NAME.EMAIL,
   [JOB_NAME.SEND_EMAIL_VERIFICATION]: QUEUE_NAME.EMAIL,
   [JOB_NAME.SEND_PASSWORD_RESET_EMAIL]: QUEUE_NAME.EMAIL,
+
+  // ── Organization emails ─────────────────────────────────────────────────
+  [JOB_NAME.SEND_ORG_INVITATION_EMAIL]: QUEUE_NAME.EMAIL,
+  [JOB_NAME.SEND_ORG_MEMBER_JOINED_EMAIL]: QUEUE_NAME.EMAIL,
+  [JOB_NAME.SEND_ORG_ROLE_CHANGED_EMAIL]: QUEUE_NAME.EMAIL,
+
+  // ── Maintenance / Cron ────────────────────────────────────────────────
   [JOB_NAME.PURGE_EXPIRED_SESSIONS]: QUEUE_NAME.MAINTENANCE,
   [JOB_NAME.PURGE_EXPIRED_TOKENS]: QUEUE_NAME.MAINTENANCE,
 };
