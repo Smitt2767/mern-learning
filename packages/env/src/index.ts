@@ -11,6 +11,10 @@ export const env = createEnv({
     AUTH_SERVER_URL: z.url().optional(),
     AUTH_SERVER_PORT: z.coerce.number().default(5000),
 
+    // ── Main Server ───────────────────────────────────────────────────────
+    MAIN_SERVER_URL: z.url().optional(),
+    MAIN_SERVER_PORT: z.coerce.number().default(5002),
+
     // ── Admin Server ──────────────────────────────────────────────────────
     ADMIN_SERVER_URL: z.url().optional(),
     ADMIN_SERVER_PORT: z.coerce.number().default(5001),
@@ -33,8 +37,8 @@ export const env = createEnv({
     // ── JWT ───────────────────────────────────────────────────────────────
     JWT_ACCESS_SECRET: z.string().min(32).optional(),
     JWT_REFRESH_SECRET: z.string().min(32).optional(),
-    JWT_ACCESS_TOKEN_EXPIRY_SECONDS: z.coerce.number().default(604800), // 7d
-    JWT_REFRESH_TOKEN_EXPIRY_SECONDS: z.coerce.number().default(2592000), // 30d
+    JWT_ACCESS_TOKEN_EXPIRY_SECONDS: z.coerce.number().default(604800),
+    JWT_REFRESH_TOKEN_EXPIRY_SECONDS: z.coerce.number().default(2592000),
 
     // ── OAuth (auth-server only) ──────────────────────────────────────────
     GITHUB_CLIENT_ID: z.string().optional(),

@@ -19,18 +19,20 @@ export interface AuthorizeOrgCallbacks {
    * Resolve a non-deleted organization by slug.
    * Return null if not found or soft-deleted.
    */
-  findOrgBySlug: (
-    slug: string,
-  ) => Promise<{
-    id: string;
-    name: string;
-    slug: string;
-    logo: string | null;
-    metadata: Record<string, unknown> | null;
-    createdAt: Date;
-    updatedAt: Date;
-    deletedAt: Date | null;
-  } | null>;
+  findOrgBySlug: (slug: string) => Promise<
+    | {
+        id: string;
+        name: string;
+        slug: string;
+        logo: string | null;
+        metadata: Record<string, unknown> | null;
+        createdAt: Date;
+        updatedAt: Date;
+        deletedAt: Date | null;
+      }
+    | null
+    | undefined
+  >;
 
   /**
    * Find the calling user's membership row for the given org.
@@ -39,14 +41,18 @@ export interface AuthorizeOrgCallbacks {
   findMember: (
     orgId: string,
     userId: string,
-  ) => Promise<{
-    id: string;
-    organizationId: string;
-    userId: string;
-    roleId: string;
-    createdAt: Date;
-    updatedAt: Date;
-  } | null>;
+  ) => Promise<
+    | {
+        id: string;
+        organizationId: string;
+        userId: string;
+        roleId: string;
+        createdAt: Date;
+        updatedAt: Date;
+      }
+    | null
+    | undefined
+  >;
 
   /**
    * Resolve a role with its org-scoped permissions.

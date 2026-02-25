@@ -10,7 +10,7 @@ if [ ! -f "$SOURCE" ]; then
   exit 1
 fi
 
-for target in auth-server admin-server mail-server sync-server packages/database; do
+for target in auth-server admin-server mail-server sync-server main-server packages/database; do
   cp "$SOURCE" "$target/.env"
   echo "Copied -> $target/.env"
 done

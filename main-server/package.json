@@ -1,0 +1,39 @@
+{
+  "name": "main-server",
+  "version": "1.0.0",
+  "description": "End-user facing API — organizations, invitations, and future user-facing features",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsc-watch --onSuccess \"node dist/index.js\"",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "imports": {
+    "#src/*": "./dist/*"
+  },
+  "dependencies": {
+    "@mern/cache": "workspace:^",
+    "@mern/core": "workspace:^",
+    "@mern/database": "workspace:^",
+    "@mern/env": "workspace:^",
+    "@mern/logger": "workspace:^",
+    "@mern/queue": "workspace:^",
+    "@mern/server": "workspace:^",
+    "drizzle-orm": "^0.45.1",
+    "express": "^5.2.1",
+    "ioredis": "^5.9.3",
+    "postgres": "^3.4.8",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^22.10.2",
+    "tsc-watch": "^7.2.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}

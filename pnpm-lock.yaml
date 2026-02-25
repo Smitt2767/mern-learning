@@ -291,6 +291,61 @@ importers:
         specifier: ^5.8.3
         version: 5.9.3
 
+  main-server:
+    dependencies:
+      '@mern/cache':
+        specifier: workspace:^
+        version: link:../packages/cache
+      '@mern/core':
+        specifier: workspace:^
+        version: link:../packages/core
+      '@mern/database':
+        specifier: workspace:^
+        version: link:../packages/database
+      '@mern/env':
+        specifier: workspace:^
+        version: link:../packages/env
+      '@mern/logger':
+        specifier: workspace:^
+        version: link:../packages/logger
+      '@mern/queue':
+        specifier: workspace:^
+        version: link:../packages/queue
+      '@mern/server':
+        specifier: workspace:^
+        version: link:../packages/server
+      drizzle-orm:
+        specifier: ^0.45.1
+        version: 0.45.1(@neondatabase/serverless@1.0.2)(@types/pg@8.16.0)(pg@8.18.0)(postgres@3.4.8)
+      express:
+        specifier: ^5.2.1
+        version: 5.2.1
+      ioredis:
+        specifier: ^5.9.3
+        version: 5.9.3
+      postgres:
+        specifier: ^3.4.8
+        version: 3.4.8
+      zod:
+        specifier: ^4.3.6
+        version: 4.3.6
+    devDependencies:
+      '@types/express':
+        specifier: ^5.0.6
+        version: 5.0.6
+      '@types/node':
+        specifier: ^22.10.2
+        version: 22.19.11
+      tsc-watch:
+        specifier: ^7.2.0
+        version: 7.2.0(typescript@5.9.3)
+      tsx:
+        specifier: ^4.21.0
+        version: 4.21.0
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
   packages/cache:
     dependencies:
       '@mern/core':
