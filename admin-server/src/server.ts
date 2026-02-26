@@ -2,11 +2,12 @@ import { BaseServer } from "@mern/server";
 
 import { Cache } from "@mern/cache";
 import { seedRbac } from "@mern/database";
+import { env } from "@mern/env";
 import { cookieOptions } from "./config/cookies.js";
 import { corsOptions } from "./config/cors.js";
 import { database } from "./config/db.js";
-import { env } from "@mern/env";
 import redis from "./config/redis.js";
+import { router as organizationsRouter } from "./routes/organizations.js";
 import { router as permissionsRouter } from "./routes/permissions.js";
 import { router as rolesRouter } from "./routes/roles.js";
 import { router as usersRouter } from "./routes/users.js";
@@ -31,6 +32,7 @@ class AdminServer extends BaseServer {
     this.app.use("/api/permissions", permissionsRouter);
     this.app.use("/api/roles", rolesRouter);
     this.app.use("/api/users", usersRouter);
+    this.app.use("/api/organizations", organizationsRouter);
   }
 }
 

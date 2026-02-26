@@ -54,6 +54,8 @@ export class RoleService {
       isSystem: row.isSystem,
       createdAt: row.createdAt,
       updatedAt: row.updatedAt,
+      organizationId: row.organizationId,
+      scope: row.scope,
       permissions,
     };
   }

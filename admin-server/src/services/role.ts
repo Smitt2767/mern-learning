@@ -2,6 +2,7 @@ import { CacheInvalidate, Cacheable } from "@mern/cache";
 import {
   type PermissionAction,
   type PermissionKey,
+  type RoleScope,
   type RoleWithPermissions,
 } from "@mern/core";
 import {
@@ -26,6 +27,8 @@ function buildRoleWithPermissions(row: {
   isSystem: boolean;
   createdAt: Date;
   updatedAt: Date;
+  scope: RoleScope;
+  organizationId: string | null;
   rolePermissions: Array<{
     action: string;
     permission: { key: string };
@@ -43,6 +46,8 @@ function buildRoleWithPermissions(row: {
     isSystem: row.isSystem,
     createdAt: row.createdAt,
     updatedAt: row.updatedAt,
+    scope: row.scope,
+    organizationId: row.organizationId,
     permissions: permissionsMap,
   };
 }
@@ -90,6 +95,7 @@ export class RoleService {
       .values({ ...data, isSystem: false })
       .returning();
     // Newly created roles have no role_permissions rows yet — defaults to empty
+
     return {
       id: role!.id,
       name: role!.name,
@@ -97,6 +103,8 @@ export class RoleService {
       isSystem: role!.isSystem,
       createdAt: role!.createdAt,
       updatedAt: role!.updatedAt,
+      organizationId: role!.organizationId,
+      scope: role!.scope,
       permissions: {} as Record<PermissionKey, PermissionAction>,
     };
   }

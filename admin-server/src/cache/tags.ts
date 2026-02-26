@@ -1,6 +1,7 @@
 import { generateCacheTag } from "@mern/cache";
 
-// Tag names must match auth-server exactly — both services share the same Redis instance.
+// Tag names must match auth-server and main-server exactly —
+// all services share the same Redis instance.
 export const CacheTags = {
   users: {
     byId: (userId: string) => generateCacheTag("users", userId),
@@ -12,5 +13,8 @@ export const CacheTags = {
     all: () => generateCacheTag("sessions"),
     byId: (sessionId: string) => generateCacheTag("sessions", sessionId),
     byUserId: (userId: string) => generateCacheTag("users", userId, "sessions"),
+  },
+  orgs: {
+    byOrgId: (orgId: string) => generateCacheTag("orgs", orgId),
   },
 } as const;
