@@ -17,6 +17,7 @@ export const JOB_NAME = {
   // ── Maintenance / Cron ───────────────────────────────────────────────────
   PURGE_EXPIRED_SESSIONS: "purge-expired-sessions",
   PURGE_EXPIRED_TOKENS: "purge-expired-tokens",
+  PURGE_EXPIRED_INVITATIONS: "purge-expired-invitations",
 } as const;
 
 export type JobName = (typeof JOB_NAME)[keyof typeof JOB_NAME];

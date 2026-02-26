@@ -1,8 +1,6 @@
 import type { JOB_NAME } from "../constants/job.js";
 
 // ─── Per-Job Payload Types ────────────────────────────────────────────────────
-// Each key must match a value in JOB_NAME exactly.
-// Adding a new job name forces you to define its data shape here.
 
 export interface JobDataMap {
   // ── Auth / User emails ──────────────────────────────────────────────────
@@ -16,7 +14,7 @@ export interface JobDataMap {
     userId: string;
     email: string;
     token: string;
-    expiresAt: string; // ISO-8601 — serialisable across queue boundary
+    expiresAt: string;
   };
 
   [JOB_NAME.SEND_PASSWORD_RESET_EMAIL]: {
@@ -26,32 +24,32 @@ export interface JobDataMap {
     expiresAt: string;
   };
 
-  // ── Organization emails ─────────────────────────────────────────────────
+  // ── Organization emails ────────────────────────────────────────────────
   [JOB_NAME.SEND_ORG_INVITATION_EMAIL]: {
     invitationId: string;
     organizationName: string;
     organizationSlug: string;
-    invitedByName: string; // "<firstName> <lastName>"
+    invitedByName: string;
     inviteeEmail: string;
-    roleName: string; // the role the invitee will receive
-    token: string; // used to build the invite link
-    expiresAt: string; // ISO-8601
+    roleName: string;
+    token: string;
+    expiresAt: string;
   };
 
   [JOB_NAME.SEND_ORG_MEMBER_JOINED_EMAIL]: {
     organizationName: string;
     organizationSlug: string;
-    newMemberName: string; // "<firstName> <lastName>"
+    newMemberName: string;
     newMemberEmail: string;
     roleName: string;
-    notifyEmails: string[]; // all owner + admin emails to notify
+    notifyEmails: string[];
   };
 
   [JOB_NAME.SEND_ORG_ROLE_CHANGED_EMAIL]: {
     organizationName: string;
     organizationSlug: string;
     memberEmail: string;
-    memberName: string; // "<firstName> <lastName>"
+    memberName: string;
     oldRoleName: string;
     newRoleName: string;
   };
@@ -59,10 +57,10 @@ export interface JobDataMap {
   // ── Maintenance / Cron ────────────────────────────────────────────────
   [JOB_NAME.PURGE_EXPIRED_SESSIONS]: Record<string, never>;
   [JOB_NAME.PURGE_EXPIRED_TOKENS]: Record<string, never>;
+  [JOB_NAME.PURGE_EXPIRED_INVITATIONS]: Record<string, never>;
 }
 
 // ─── Per-Job Result Types ─────────────────────────────────────────────────────
-// Returned by the worker processor — stored in job_records.result column.
 
 export interface JobResultMap {
   [JOB_NAME.SEND_WELCOME_EMAIL]: { messageId: string };
@@ -73,4 +71,5 @@ export interface JobResultMap {
   [JOB_NAME.SEND_ORG_ROLE_CHANGED_EMAIL]: { messageId: string };
   [JOB_NAME.PURGE_EXPIRED_SESSIONS]: { deletedCount: number };
   [JOB_NAME.PURGE_EXPIRED_TOKENS]: { deletedCount: number };
+  [JOB_NAME.PURGE_EXPIRED_INVITATIONS]: { deletedCount: number };
 }
