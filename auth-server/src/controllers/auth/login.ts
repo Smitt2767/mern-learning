@@ -2,11 +2,12 @@ import { ACCOUNT_PROVIDER, USER_STATUS, loginSchema } from "@mern/core";
 import type { Request, Response } from "express";
 import crypto from "node:crypto";
 
+import { AppError, Cookie, Jwt, Password } from "@mern/server";
 import { appConfig } from "../../config/app.js";
 import { AccountService } from "../../services/account.js";
+import { InvitationService } from "../../services/invitation.js";
 import { SessionService } from "../../services/session.js";
 import { UserService } from "../../services/user.js";
-import { AppError, Cookie, Jwt, Password } from "@mern/server";
 
 export async function login(req: Request, res: Response): Promise<void> {
   const input = loginSchema.parse(req.body);
@@ -46,15 +47,8 @@ export async function login(req: Request, res: Response): Promise<void> {
 
   const sessionId = crypto.randomUUID();
 
-  const accessToken = Jwt.signAccessToken({
-    userId: user.id,
-    sessionId,
-  });
-
-  const refreshToken = Jwt.signRefreshToken({
-    userId: user.id,
-    sessionId,
-  });
+  const accessToken = Jwt.signAccessToken({ userId: user.id, sessionId });
+  const refreshToken = Jwt.signRefreshToken({ userId: user.id, sessionId });
 
   await SessionService.create({
     id: sessionId,
@@ -72,6 +66,9 @@ export async function login(req: Request, res: Response): Promise<void> {
   Cookie.set(res, "refresh_token", refreshToken, {
     maxAge: appConfig.auth.refreshToken.maxAge,
   });
+
+  // Auto-accept any pending org invitations for this email — fire-and-forget
+  void InvitationService.autoAcceptPendingByEmail(user.email, user.id);
 
   const { password: _, ...sanitizedUser } = user;
 

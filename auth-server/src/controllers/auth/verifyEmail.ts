@@ -3,9 +3,10 @@ import { QueueManager } from "@mern/queue";
 import { AppError } from "@mern/server";
 import type { Request, Response } from "express";
 
-import { db } from "../../config/db.js";
 import { env } from "@mern/env";
+import { db } from "../../config/db.js";
 import { EmailVerificationService } from "../../services/email-verification.js";
+import { InvitationService } from "../../services/invitation.js";
 import { UserService } from "../../services/user.js";
 
 export async function verifyEmail(req: Request, res: Response): Promise<void> {
@@ -40,6 +41,10 @@ export async function verifyEmail(req: Request, res: Response): Promise<void> {
     },
     { priority: 10 },
   );
+
+  // Auto-accept any pending org invitations for this email — fire-and-forget.
+  // Runs after verification because only a verified user should be auto-joined.
+  void InvitationService.autoAcceptPendingByEmail(user.email, user.id);
 
   res.redirect(`${env.FRONTEND_URL}/verify-email?success=true`);
 }

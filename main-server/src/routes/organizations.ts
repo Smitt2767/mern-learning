@@ -2,7 +2,12 @@ import { PERMISSION_ACTION, PERMISSION_KEY } from "@mern/core";
 import express, { Router } from "express";
 import { InvitationController } from "../controllers/invitation/index.js";
 import { OrganizationController } from "../controllers/organization/index.js";
-import { authenticate, authorizeOrg, rateLimit } from "../middleware/index.js";
+import {
+  authenticate,
+  authorize,
+  authorizeOrg,
+  rateLimit,
+} from "../middleware/index.js";
 
 export const router: Router = express.Router();
 
@@ -13,11 +18,13 @@ router
   .post(
     rateLimit({ windowMin: 60, limit: 10 }),
     authenticate,
+    authorize(PERMISSION_KEY.ORG_MANAGEMENT, PERMISSION_ACTION.WRITE),
     OrganizationController.create,
   )
   .get(
     rateLimit({ windowMin: 15, limit: 60 }),
     authenticate,
+    authorize(PERMISSION_KEY.USER_MANAGEMENT, PERMISSION_ACTION.READ),
     OrganizationController.list,
   );
 

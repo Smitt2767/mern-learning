@@ -8,11 +8,12 @@ import { QueueManager } from "@mern/queue";
 import type { Request, Response } from "express";
 import crypto from "node:crypto";
 
+import { env } from "@mern/env";
 import { AppError, Cookie, Jwt } from "@mern/server";
 import { appConfig } from "../../config/app.js";
 import { db } from "../../config/db.js";
-import { env } from "@mern/env";
 import { AccountService } from "../../services/account.js";
+import { InvitationService } from "../../services/invitation.js";
 import { RoleService } from "../../services/role.js";
 import { SessionService } from "../../services/session.js";
 import { UserService } from "../../services/user.js";
@@ -38,6 +39,7 @@ export async function oauthCallback(
     const { provider: providerName } = oauthProviderParamSchema.parse(
       req.params,
     );
+
     // ── 3. Resolve provider — throws 400 for unknown slugs ────────────────
     const provider = getOAuthProvider(providerName);
 
@@ -56,7 +58,6 @@ export async function oauthCallback(
 
     // ── 6. Find or create user (wrapped in transaction) ────────────────────
     const { user, isNewUser } = await db.transaction(async (tx) => {
-      // Check if this OAuth account already exists
       const existingAccount = await AccountService.findByProviderAndAccountId(
         providerEnum,
         profile.providerAccountId,
@@ -64,8 +65,6 @@ export async function oauthCallback(
       );
 
       if (existingAccount) {
-        // Account exists — load the user
-        // findById is @Cacheable and cannot accept tx; safe to call outside tx scope
         const user = await UserService.findById(existingAccount.userId);
         if (!user) throw AppError.internal("Orphaned OAuth account");
 
@@ -77,7 +76,6 @@ export async function oauthCallback(
           await UserService.updateStatus(user.id, USER_STATUS.ACTIVE, tx);
         }
 
-        // Sync profile image if it changed on the provider side
         if (
           profile.profileImage &&
           user.profileImage !== profile.profileImage
@@ -92,16 +90,11 @@ export async function oauthCallback(
         return { user, isNewUser: false };
       }
 
-      // No OAuth account yet — check if this email is already registered
-      // under a different provider. Account linking is not supported, so the
-      // user must sign in with the method they originally used.
       const existingUser = await UserService.findByEmail(profile.email, tx);
       if (existingUser) {
         throw AppError.badRequest("email_already_registered");
       }
 
-      // Brand new user — create user + linked OAuth account
-      // emailVerifiedAt is set immediately since the OAuth provider already verified the email
       const newUser = await UserService.create(
         {
           firstName: profile.firstName,
@@ -126,7 +119,7 @@ export async function oauthCallback(
       return { user: newUser, isNewUser: true };
     });
 
-    // ── 7. Create session & sign tokens ────────────────────────────────────
+    // ── 7. Create session & sign tokens ───────────────────────────────────
     const sessionId = crypto.randomUUID();
     const accessToken = Jwt.signAccessToken({ userId: user.id, sessionId });
     const refreshToken = Jwt.signRefreshToken({ userId: user.id, sessionId });
@@ -162,7 +155,12 @@ export async function oauthCallback(
       );
     }
 
-    // ── 10. Redirect to frontend ───────────────────────────────────────────
+    // ── 10. Auto-accept any pending org invitations — fire-and-forget ─────
+    // OAuth emails are pre-verified by the provider, so it's safe to
+    // auto-accept immediately for both new and returning users.
+    void InvitationService.autoAcceptPendingByEmail(user.email, user.id);
+
+    // ── 11. Redirect to frontend ──────────────────────────────────────────
     res.redirect(`${env.FRONTEND_URL}/auth/callback?success=true`);
   } catch (err: unknown) {
     if (err instanceof AppError) {
