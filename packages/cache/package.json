@@ -16,7 +16,8 @@
     "#src/*": "./dist/*"
   },
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "typecheck": "tsc --noEmit"
   },
   "keywords": [],
   "author": "",

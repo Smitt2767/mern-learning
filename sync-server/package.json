@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "tsc-watch --onSuccess \"node dist/index.js\"",
     "build": "tsc",
+    "typecheck": "tsc --noEmit",
     "start": "node dist/index.js",
     "generate-hash": "tsx src/scripts/generate-hash.ts"
   },

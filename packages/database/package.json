@@ -15,6 +15,7 @@
   "scripts": {
     "dev": "pnpm db:studio",
     "build": "tsc",
+    "typecheck": "tsc --noEmit",
     "seed": "tsx src/seeds/run.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",

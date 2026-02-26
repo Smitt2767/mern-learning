@@ -1,9 +1,7 @@
 // ─── Job Names ────────────────────────────────────────────────────────────────
-// Single source of truth — used in queues, workers, DB enum, and JobDataMap.
-// ⚠️  When adding a new job:
-//   1. Add the name here
-//   2. Add its payload + result types in types/job.ts
-//   3. Map it to a queue in packages/queue/src/constants/index.ts
+// Add new job names here as your application grows.
+// These are the single source of truth — used in queues, workers, the DB enum,
+// and the JobDataMap type below.
 
 export const JOB_NAME = {
   // ── Auth / User emails ────────────────────────────────────────────────────

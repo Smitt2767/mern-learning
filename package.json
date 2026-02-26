@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "pnpm --parallel -r dev",
     "build": "pnpm --parallel -r build",
+    "typecheck": "pnpm --parallel -r typecheck",
     "db:studio": "pnpm --filter auth-server db:studio",
     "env:copy": "sh scripts/copy-env.sh"
   },

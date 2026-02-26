@@ -16,6 +16,7 @@
   "files": ["dist"],
   "scripts": {
     "build": "tsc",
+    "typecheck": "tsc --noEmit",
     "dev": "tsc --watch"
   },
   "devDependencies": {
